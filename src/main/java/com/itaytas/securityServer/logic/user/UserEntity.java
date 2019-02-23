@@ -15,11 +15,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.itaytas.securityServer.logic.audit.DateAudit;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
 @Entity
 @Document(collection = "Users")
 public class UserEntity extends DateAudit {

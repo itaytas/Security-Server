@@ -1,10 +1,25 @@
-package com.itaytas.securityServer.api.logs;
+package com.itaytas.securityServer.logic.log;
 
-import com.itaytas.securityServer.logic.log.LogEntity;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.validation.constraints.NotBlank;
 
-public class LogRequest {
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-	// Logs Identifiers
+import com.itaytas.securityServer.logic.audit.DateAudit;
+
+@Entity
+@Document(collection="logs")
+public class LogEntity extends DateAudit {
+
+	private static final long serialVersionUID = -4630112483209068719L;
+
+	private String logId;
+	private String userId;
+
+	// LogRequest Attributes
 	private String protocol;
 	private String source;
 	private String destination;
@@ -20,12 +35,13 @@ public class LogRequest {
 	private String data;
 	private boolean isMalicious;
 
-	public LogRequest() {
+	public LogEntity() {
 	}
 
-	public LogRequest(String protocol, String source, String destination, String sourcePort, String destinationPort,
-			String httpMethod, String resource, String httpProtocol, String userAgent, String referer,
-			String contentType, String contentLength, String data, boolean isMalicious) {
+	public LogEntity(String userId, String protocol, String source, String destination, String sourcePort,
+			String destinationPort, String httpMethod, String resource, String httpProtocol, String userAgent,
+			String referer, String contentType, String contentLength, String data, boolean isMalicious) {
+		this.userId = userId;
 		this.protocol = protocol;
 		this.source = source;
 		this.destination = destination;
@@ -42,18 +58,23 @@ public class LogRequest {
 		this.isMalicious = isMalicious;
 	}
 
-	public LogRequest(LogEntity entity) {
-		this(entity.getProtocol(), entity.getSource(), entity.getDestination(), entity.getSourcePort(),
-				entity.getDestinationPort(), entity.getHttpMethod(), entity.getResource(), entity.getHttpProtocol(),
-				entity.getUserAgent(), entity.getReferer(), entity.getContentType(), entity.getContentLength(),
-				entity.getData(), entity.isMalicious());
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public String getLogId() {
+		return logId;
 	}
 
-	public LogEntity toEntity(String userId) {
-		LogEntity entity = new LogEntity(userId, this.protocol, this.source, this.destination, this.sourcePort,
-				this.destinationPort, this.httpMethod, this.resource, this.httpProtocol, this.userAgent, this.referer,
-				this.contentType, this.contentLength, this.data, this.isMalicious);
-		return entity;
+	public void setLogId(String logId) {
+		this.logId = logId;
+	}
+
+	@NotBlank
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	public String getProtocol() {
@@ -160,21 +181,25 @@ public class LogRequest {
 		this.data = data;
 	}
 
-	public boolean getIsMalicious() {
+	public boolean isMalicious() {
 		return isMalicious;
 	}
 
-	public void setIsMalicious(boolean isMalicious) {
+	public void setMalicious(boolean isMalicious) {
 		this.isMalicious = isMalicious;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 	@Override
 	public String toString() {
-		return "LogRequest [protocol=" + protocol + ", source=" + source + ", destination=" + destination
-				+ ", sourcePort=" + sourcePort + ", destinationPort=" + destinationPort + ", httpMethod=" + httpMethod
-				+ ", resource=" + resource + ", httpProtocol=" + httpProtocol + ", userAgent=" + userAgent
-				+ ", referer=" + referer + ", contentType=" + contentType + ", contentLength=" + contentLength
-				+ ", data=" + data + ", isMalicious=" + isMalicious + "]";
+		return "LogEntity [logId=" + logId + ", userId=" + userId + ", protocol=" + protocol + ", source=" + source
+				+ ", destination=" + destination + ", sourcePort=" + sourcePort + ", destinationPort=" + destinationPort
+				+ ", httpMethod=" + httpMethod + ", resource=" + resource + ", httpProtocol=" + httpProtocol
+				+ ", userAgent=" + userAgent + ", referer=" + referer + ", contentType=" + contentType
+				+ ", contentLength=" + contentLength + ", data=" + data + ", isMalicious=" + isMalicious + "]";
 	}
-
+	
 }
