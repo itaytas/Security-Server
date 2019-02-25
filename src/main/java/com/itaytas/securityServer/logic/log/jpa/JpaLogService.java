@@ -15,7 +15,7 @@ import com.itaytas.securityServer.aop.MyLog;
 import com.itaytas.securityServer.api.response.ApiResponse;
 import com.itaytas.securityServer.dal.LogDao;
 import com.itaytas.securityServer.exception.LogNotFoundException;
-import com.itaytas.securityServer.logic.log.LogEntity;
+import com.itaytas.securityServer.logic.log.LogEntity_v2;
 import com.itaytas.securityServer.logic.log.LogService;
 
 @Service
@@ -31,7 +31,7 @@ public class JpaLogService implements LogService {
 	@Override
 	@Transactional
 	@MyLog
-	public ResponseEntity<?> addNewLogs(String userIdentifier, List<LogEntity> logs) {
+	public ResponseEntity<?> addNewLogs(String userIdentifier, List<LogEntity_v2> logs) {
 		int numLogs = logs.size();
 		if (numLogs == 0) {
 			return new ResponseEntity(
@@ -47,16 +47,16 @@ public class JpaLogService implements LogService {
 	@Override
 	@Transactional(readOnly = true)
 	@MyLog
-	public List<LogEntity> getAllLogsByUserId(String userId, int size, int page) {
-		Page<LogEntity> logsPage = this.logDao.findByUserId(userId, PageRequest.of(page, size));
+	public List<LogEntity_v2> getAllLogsByUserId(String userId, int size, int page) {
+		Page<LogEntity_v2> logsPage = this.logDao.findByUserId(userId, PageRequest.of(page, size));
 		return logsPage.getContent();
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	@MyLog
-	public LogEntity getLogById(String logId) throws Exception {
-		Optional<LogEntity> op = this.logDao.findById(logId);
+	public LogEntity_v2 getLogById(String logId) throws Exception {
+		Optional<LogEntity_v2> op = this.logDao.findById(logId);
 		if (op.isPresent()) {
 			return op.get();
 		} else {

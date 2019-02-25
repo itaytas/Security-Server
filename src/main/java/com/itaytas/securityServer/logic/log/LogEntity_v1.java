@@ -12,7 +12,7 @@ import com.itaytas.securityServer.logic.audit.DateAudit;
 
 @Entity
 @Document(collection="logs")
-public class LogEntity extends DateAudit {
+public class LogEntity_v1 extends DateAudit {
 
 	private static final long serialVersionUID = -4630112483209068719L;
 
@@ -35,10 +35,10 @@ public class LogEntity extends DateAudit {
 	private String data;
 	private boolean isMalicious;
 
-	public LogEntity() {
+	public LogEntity_v1() {
 	}
 
-	public LogEntity(String userId, String protocol, String source, String destination, String sourcePort,
+	public LogEntity_v1(String userId, String protocol, String source, String destination, String sourcePort,
 			String destinationPort, String httpMethod, String resource, String httpProtocol, String userAgent,
 			String referer, String contentType, String contentLength, String data, boolean isMalicious) {
 		this.userId = userId;
