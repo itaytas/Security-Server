@@ -1,10 +1,13 @@
 package com.itaytas.securityServer.api.logs;
 
+import java.util.List;
+
 import com.itaytas.securityServer.logic.log.LogEntity_v2;
 
 public class LogRequest_v2 {
 
 	// Logs Identifiers
+
 	private String protocol;
 	private String source;
 	private String destination;
@@ -12,12 +15,13 @@ public class LogRequest_v2 {
 	private String destinationPort;
 	private String httpData;
 	private boolean isMalicious;
+	private List<String> attacksNames;
 
 	public LogRequest_v2() {
 	}
 
 	public LogRequest_v2(String protocol, String source, String destination, String sourcePort, String destinationPort,
-			String httpData, boolean isMalicious) {
+			String httpData, boolean isMalicious, List<String> attacksNames) {
 		super();
 		this.protocol = protocol;
 		this.source = source;
@@ -26,11 +30,12 @@ public class LogRequest_v2 {
 		this.destinationPort = destinationPort;
 		this.httpData = httpData;
 		this.isMalicious = isMalicious;
+		this.attacksNames = attacksNames;
 	}
 
 	public LogEntity_v2 toEntity(String userId) {
-		LogEntity_v2 entity = new LogEntity_v2(userId, protocol, source, destination, sourcePort, destinationPort,
-				httpData, isMalicious);
+		LogEntity_v2 entity = new LogEntity_v2(userId, this.protocol, this.source, this.destination,
+				this.sourcePort, this.destinationPort, this.httpData, this.isMalicious, this.attacksNames);
 		return entity;
 	}
 
@@ -90,11 +95,19 @@ public class LogRequest_v2 {
 		this.isMalicious = isMalicious;
 	}
 
+	public List<String> getAttacksNames() {
+		return attacksNames;
+	}
+
+	public void setAttacksNames(List<String> attacksNames) {
+		this.attacksNames = attacksNames;
+	}
+
 	@Override
 	public String toString() {
 		return "LogRequest_v2 [protocol=" + protocol + ", source=" + source + ", destination=" + destination
 				+ ", sourcePort=" + sourcePort + ", destinationPort=" + destinationPort + ", httpData=" + httpData
-				+ ", isMalicious=" + isMalicious + "]";
+				+ ", isMalicious=" + isMalicious + ", attacksNames=" + attacksNames + "]";
 	}
 
 }

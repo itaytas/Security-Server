@@ -1,5 +1,7 @@
 package com.itaytas.securityServer.logic.log;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,12 +28,10 @@ public class LogEntity_v2 extends DateAudit {
 	private String destinationPort;
 	private String httpData;
 	private boolean isMalicious;
-
-	public LogEntity_v2() {
-	}
+	private List<String> attacksNames;
 
 	public LogEntity_v2(String userId, String protocol, String source, String destination, String sourcePort,
-			String destinationPort, String httpData, boolean isMalicious) {
+			String destinationPort, String httpData, boolean isMalicious, List<String> attacksNames) {
 		super();
 		this.userId = userId;
 		this.protocol = protocol;
@@ -41,9 +41,9 @@ public class LogEntity_v2 extends DateAudit {
 		this.destinationPort = destinationPort;
 		this.httpData = httpData;
 		this.isMalicious = isMalicious;
+		this.attacksNames = attacksNames;
 	}
-	
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public String getLogId() {
@@ -122,6 +122,19 @@ public class LogEntity_v2 extends DateAudit {
 		return serialVersionUID;
 	}
 
-	
-	
+	public List<String> getAttacksNames() {
+		return attacksNames;
+	}
+
+	public void setAttacksNames(List<String> attacksNames) {
+		this.attacksNames = attacksNames;
+	}
+
+	@Override
+	public String toString() {
+		return "LogEntity_v2 [logId=" + logId + ", userId=" + userId + ", protocol=" + protocol + ", source=" + source
+				+ ", destination=" + destination + ", sourcePort=" + sourcePort + ", destinationPort=" + destinationPort
+				+ ", httpData=" + httpData + ", isMalicious=" + isMalicious + ", attacksNames=" + attacksNames + "]";
+	}
+
 }
