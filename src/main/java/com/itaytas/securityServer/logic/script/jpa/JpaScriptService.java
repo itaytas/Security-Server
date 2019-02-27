@@ -1,9 +1,5 @@
 package com.itaytas.securityServer.logic.script.jpa;
 
-import java.awt.print.Pageable;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.itaytas.securityServer.aop.MyLog;
 import com.itaytas.securityServer.api.response.ApiResponse;
 import com.itaytas.securityServer.api.response.PagedResponse;
 import com.itaytas.securityServer.config.AppConstants;
@@ -20,8 +17,6 @@ import com.itaytas.securityServer.dal.ScriptDao;
 import com.itaytas.securityServer.exception.BadRequestException;
 import com.itaytas.securityServer.logic.script.ScriptEntity;
 import com.itaytas.securityServer.logic.script.ScriptService;
-
-import io.jsonwebtoken.lang.Collections;
 
 @Service
 public class JpaScriptService implements ScriptService {
@@ -35,32 +30,32 @@ public class JpaScriptService implements ScriptService {
 
 	@Override
 	@Transactional
+	@MyLog
 	public ResponseEntity<?> addNewScript(ScriptEntity scriptEntity) {
 		ScriptEntity entity = this.scriptDao.save(scriptEntity);
 
-		return new ResponseEntity(new ApiResponse(true, "script for " + entity.getAttackName() + "was saved!"),
+		return new ResponseEntity(
+				new ApiResponse(true, "Script for " + entity.getAttackName() + "was saved!"),
 				HttpStatus.CREATED);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
+	@MyLog
 	public PagedResponse<ScriptEntity> getAllScripts(int page, int size) {
 		validatePageNumberAndSize(page, size);
 
 		Page<ScriptEntity> scriptPage = this.scriptDao
 				.findAll(PageRequest.of(page, size, Sort.Direction.DESC, "createdAt"));
 
-		if (scriptPage.getNumberOfElements() == 0) {
-			return new PagedResponse<>(new ArrayList<>(), scriptPage.getNumber(), scriptPage.getSize(),
-					scriptPage.getTotalElements(), scriptPage.getTotalPages(), scriptPage.isLast());
-
-		}
-		return null;
+		return new PagedResponse<>(scriptPage.getContent(), scriptPage.getNumber(), scriptPage.getSize(),
+				scriptPage.getTotalElements(), scriptPage.getTotalPages(), scriptPage.isLast());
 
 	}
 
 	@Override
 	@Transactional
+	@MyLog
 	public void cleanup() {
 		this.scriptDao.deleteAll();
 
