@@ -28,12 +28,13 @@ public class JpaScriptService implements ScriptService {
 		this.scriptDao = scriptDao;
 	}
 
+	
 	@Override
 	@Transactional
 	@MyLog
 	public ResponseEntity<?> addNewScript(ScriptEntity scriptEntity) {
 		ScriptEntity entity = this.scriptDao.save(scriptEntity);
-
+		// TODO: add assertion check for duplicate scripts
 		return new ResponseEntity(
 				new ApiResponse(true, "Script for " + entity.getAttackName() + "was saved!"),
 				HttpStatus.CREATED);

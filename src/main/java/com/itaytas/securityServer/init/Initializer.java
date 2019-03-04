@@ -36,10 +36,10 @@ public class Initializer {
 
 	@MyLog
 	private void createDefaultScripts() {
-		createSqlInjectionScript("sqlInjection", true, 2);
+//		createSqlInjectionScript("sqlInjection", true, 2);
 	}
 
-	private void createSqlInjectionScript(String attackName, boolean active, int numLogs) {
+	/*private void createSqlInjectionScript(String attackName, boolean active, int numLogs) {
 		Map<String, Object> sqlInjection1Details = new HashMap<>();
 		sqlInjection1Details.put("numLogs", numLogs);
 		
@@ -49,7 +49,7 @@ public class Initializer {
 				sqlInjection1.getAttackName(), sqlInjection1Details) == null) {
 			this.scriptDao.save(sqlInjection1);
 		}
-	}
+	}*/
 
 	@MyLog
 	private void createDefaultRoles() {

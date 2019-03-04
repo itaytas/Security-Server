@@ -1,5 +1,6 @@
 package com.itaytas.securityServer.api.script;
 
+import java.util.List;
 import java.util.Map;
 
 import com.itaytas.securityServer.logic.script.ScriptEntity;
@@ -7,14 +8,14 @@ import com.itaytas.securityServer.logic.script.ScriptEntity;
 public class ScriptRequest {
 
 	private String scriptId;
-	private String attackName;
-	private boolean active;
+	private List<String> attackName;
+	private Boolean active;
 	private Map<String, Object> details;
 
 	public ScriptRequest() {
 	}
 
-	public ScriptRequest(String attackName, boolean active, Map<String, Object> details) {
+	public ScriptRequest(List<String> attackName, boolean active, Map<String, Object> details) {
 		super();
 		this.attackName = attackName;
 		this.active = active;
@@ -46,11 +47,11 @@ public class ScriptRequest {
 		this.scriptId = scriptId;
 	}
 
-	public String getAttackName() {
+	public List<String> getAttackName() {
 		return attackName;
 	}
 
-	public void setAttackName(String attackName) {
+	public void setAttackName(List<String> attackName) {
 		this.attackName = attackName;
 	}
 
@@ -75,5 +76,4 @@ public class ScriptRequest {
 		return "ScriptRequest [scriptId=" + scriptId + ", attackName=" + attackName + ", active=" + active
 				+ ", details=" + details + "]";
 	}
-
 }

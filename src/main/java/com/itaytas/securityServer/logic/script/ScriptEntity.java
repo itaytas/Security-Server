@@ -1,5 +1,6 @@
 package com.itaytas.securityServer.logic.script;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Entity;
@@ -19,16 +20,17 @@ public class ScriptEntity extends DateAudit {
 	private static final long serialVersionUID = 7399472036093751716L;
 
 	private String scriptId;
-	private String attackName;
-	private boolean active;
+	private String type;
+	private List<String> attacksNames;
+	private Boolean active;
 	private Map<String, Object> details;
 
 	public ScriptEntity() {
 	}
 
-	public ScriptEntity(String attackName, boolean active, Map<String, Object> details) {
+	public ScriptEntity(List<String> attacksNames, Boolean active, Map<String, Object> details) {
 		super();
-		this.attackName = attackName;
+		this.attacksNames = attacksNames;
 		this.active = active;
 		this.details = details;
 	}
@@ -38,13 +40,18 @@ public class ScriptEntity extends DateAudit {
 	public String getScriptId() {
 		return scriptId;
 	}
-
+	
 	@NotBlank
-	public String getAttackName() {
-		return attackName;
+	public String getType() {
+		return type;
 	}
 
-	public boolean isActive() {
+	@NotBlank
+	public List<String> getAttackName() {
+		return attacksNames;
+	}
+
+	public Boolean isActive() {
 		return active;
 	}
 
@@ -55,12 +62,16 @@ public class ScriptEntity extends DateAudit {
 	public void setScriptId(String scriptId) {
 		this.scriptId = scriptId;
 	}
-
-	public void setAttackName(String attackName) {
-		this.attackName = attackName;
+	
+	public void setType(String type) {
+		this.type = type;
 	}
 
-	public void setActive(boolean active) {
+	public void setAttackName(List<String> attacksNames) {
+		this.attacksNames = attacksNames;
+	}
+
+	public void setActive(Boolean active) {
 		this.active = active;
 	}
 
@@ -74,7 +85,7 @@ public class ScriptEntity extends DateAudit {
 	
 	@Override
 	public String toString() {
-		return "ScriptEntity [scriptId=" + scriptId + ", attackName=" + attackName + ", active=" + active + ", details="
+		return "ScriptEntity [scriptId=" + scriptId + ", attacksNames=" + attacksNames + ", active=" + active + ", details="
 				+ details + "]";
 	}
 
@@ -83,8 +94,9 @@ public class ScriptEntity extends DateAudit {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (active ? 1231 : 1237);
-		result = prime * result + ((attackName == null) ? 0 : attackName.hashCode());
+		result = prime * result + ((attacksNames == null) ? 0 : attacksNames.hashCode());
 		result = prime * result + ((details == null) ? 0 : details.hashCode());
+		result = prime * result + ((scriptId == null) ? 0 : scriptId.hashCode());
 		return result;
 	}
 
@@ -99,15 +111,20 @@ public class ScriptEntity extends DateAudit {
 		ScriptEntity other = (ScriptEntity) obj;
 		if (active != other.active)
 			return false;
-		if (attackName == null) {
-			if (other.attackName != null)
+		if (attacksNames == null) {
+			if (other.attacksNames != null)
 				return false;
-		} else if (!attackName.equals(other.attackName))
+		} else if (!attacksNames.equals(other.attacksNames))
 			return false;
 		if (details == null) {
 			if (other.details != null)
 				return false;
 		} else if (!details.equals(other.details))
+			return false;
+		if (scriptId == null) {
+			if (other.scriptId != null)
+				return false;
+		} else if (!scriptId.equals(other.scriptId))
 			return false;
 		return true;
 	}

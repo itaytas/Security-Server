@@ -1,13 +1,13 @@
 package com.itaytas.securityServer.logic.script.details;
 
-public class SqlInjectionDetails {
+public class NumLogs {
 	
 	private int numLogs;
 
-	public SqlInjectionDetails() {
+	public NumLogs() {
 	}
 
-	public SqlInjectionDetails(int numLogs) {
+	public NumLogs(int numLogs) {
 		this.numLogs = numLogs;
 	}
 
@@ -21,8 +21,7 @@ public class SqlInjectionDetails {
 
 	@Override
 	public String toString() {
-		return "SqlInjectionDetails [numLogs=" + numLogs + "]";
+		return "NumLogs [numLogs=" + numLogs + "]";
 	}
-	
 	
 }

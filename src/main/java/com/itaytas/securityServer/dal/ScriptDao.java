@@ -14,4 +14,5 @@ public interface ScriptDao extends PagingAndSortingRepository<ScriptEntity, Stri
 	ScriptEntity findByAttackNameAndDetails(
 			@Param("attackName") String attackName,
     		@Param("details") Map<String, Object> details);
+	
 }
