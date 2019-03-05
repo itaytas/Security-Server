@@ -27,11 +27,11 @@ public class LogEntity_v2 extends DateAudit {
 	private String sourcePort;
 	private String destinationPort;
 	private String httpData;
-	private boolean isMalicious;
+	private Boolean isMalicious;
 	private List<String> attacksNames;
 
 	public LogEntity_v2(String userId, String protocol, String source, String destination, String sourcePort,
-			String destinationPort, String httpData, boolean isMalicious, List<String> attacksNames) {
+			String destinationPort, String httpData, Boolean isMalicious, List<String> attacksNames) {
 		super();
 		this.userId = userId;
 		this.protocol = protocol;
@@ -110,11 +110,11 @@ public class LogEntity_v2 extends DateAudit {
 		this.httpData = httpData;
 	}
 
-	public boolean isMalicious() {
+	public Boolean isMalicious() {
 		return isMalicious;
 	}
 
-	public void setMalicious(boolean isMalicious) {
+	public void setMalicious(Boolean isMalicious) {
 		this.isMalicious = isMalicious;
 	}
 

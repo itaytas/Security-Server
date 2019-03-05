@@ -17,6 +17,10 @@ public interface LogDao extends PagingAndSortingRepository<LogEntity_v2, String>
 
 	Page<LogEntity_v2> findByUserId(String userId, Pageable pageable);
 
-	List<LogEntity_v2> findByUserIdAndCreateDateBetween(@Param("userId") String userId, Date from, Date to);
+	List<LogEntity_v2> findByUserIdAndIsMaliciousAndCreateDateBetween(
+			@Param("userId") String userId,
+			@Param("isMalicious") Boolean isMalicious,
+			Date from, Date to);
+	
 
 }
