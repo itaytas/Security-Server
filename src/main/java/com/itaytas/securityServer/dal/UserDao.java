@@ -3,10 +3,12 @@ package com.itaytas.securityServer.dal;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import com.itaytas.securityServer.logic.user.Role;
 import com.itaytas.securityServer.logic.user.UserEntity;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface UserDao extends PagingAndSortingRepository<UserEntity, String> {
@@ -22,4 +24,6 @@ public interface UserDao extends PagingAndSortingRepository<UserEntity, String> 
 	Boolean existsByUsername(String username);
 
 	Boolean existsByEmail(String email);
+	
+	List<UserEntity> findByRoles(Set<Role> roles);
 }

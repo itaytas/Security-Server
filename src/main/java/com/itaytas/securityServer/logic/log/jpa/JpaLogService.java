@@ -1,5 +1,7 @@
 package com.itaytas.securityServer.logic.log.jpa;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -85,4 +87,23 @@ public class JpaLogService implements LogService {
 			throw new BadRequestException("Page size must not be greater than " + AppConstants.MAX_PAGE_SIZE);
 		}
 	}
+
+	@Override
+	public List<LogEntity_v2> getUserMaliciousLogsBetweenDates(
+			String userId, Date fromDateToCheck, Date currentDate) {
+		
+		List<LogEntity_v2> allUserLogs= this.logDao.findByUserIdAndIsMalicious(userId, true);
+		
+		List<LogEntity_v2> relevantLogs = new ArrayList<>();
+		
+		allUserLogs.stream().forEach((log) -> {
+			if (log.getCreatedAt().after(fromDateToCheck)) {
+				relevantLogs.add(log);
+			}
+		});
+		return null;
+	}
+
+	
+	
 }

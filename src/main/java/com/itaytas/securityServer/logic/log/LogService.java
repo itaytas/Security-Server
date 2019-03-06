@@ -1,5 +1,6 @@
 package com.itaytas.securityServer.logic.log;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -13,5 +14,7 @@ public interface LogService {
 	LogEntity_v2 getLogById(String logId) throws Exception;
 
 	void cleanup();
+
+	List<LogEntity_v2> getUserMaliciousLogsBetweenDates(String userId, Date fromDateToCheck, Date currentDate);
 
 }

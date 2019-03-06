@@ -49,7 +49,7 @@ public class ScheduledTasks {
     }
     
     /**
-     * Step 1: Get all scripts from DB.
+     * Step 1: Get all active scripts from DB.
      * Step 2: for each script invoke operation of plug-in using script's type [String]
      * Step 3: Get return value (Null / Alert).
      * Step 4: Check if the return value is not Null and then try to save it.
@@ -60,7 +60,7 @@ public class ScheduledTasks {
 	public void findScriptsEvents() {
 		String nowDate = dateFormat.format(new Date());
 		LOG.info("The time is now " + nowDate);
-		List<ScriptEntity> scripts = (List<ScriptEntity>) this.scriptDao.findAll();
+		List<ScriptEntity> scripts = this.scriptDao.findByActive(true);
 		Object[] rvArray = null;
 		try {
 			for (ScriptEntity scriptEntity : scripts) {
