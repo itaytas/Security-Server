@@ -1,5 +1,6 @@
 package com.itaytas.securityServer.logic.user;
 
+import java.util.List;
 
 public interface UserUtilService {
 	
@@ -8,4 +9,6 @@ public interface UserUtilService {
 	boolean checkEmailAvailability(String email);
 	
 	UserEntity getUserProfile(String username);
+	
+	List<UserEntity> getAllUsersWithUserRole();
 }

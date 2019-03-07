@@ -89,10 +89,10 @@ public class JpaLogService implements LogService {
 	}
 
 	@Override
-	public List<LogEntity_v2> getUserMaliciousLogsBetweenDates(
-			String userId, Date fromDateToCheck, Date currentDate) {
+	public List<LogEntity_v2> getUserMaliciousLogsAfterDate(
+			String userId, Date fromDateToCheck) {
 		
-		List<LogEntity_v2> allUserLogs= this.logDao.findByUserIdAndIsMalicious(userId, true);
+		List<LogEntity_v2> allUserLogs = this.logDao.findByUserIdAndIsMalicious(userId, true);
 		
 		List<LogEntity_v2> relevantLogs = new ArrayList<>();
 		
@@ -101,7 +101,24 @@ public class JpaLogService implements LogService {
 				relevantLogs.add(log);
 			}
 		});
-		return null;
+		return relevantLogs;
+	}
+
+	@Override
+	public List<LogEntity_v2> getUserMaliciousLogsByAttacksNamesAfterDate(String userId, List<String> attacksNames,
+			Date fromDateToCheck) {
+		List<LogEntity_v2> UnfilteredLogs = getUserMaliciousLogsAfterDate(userId, fromDateToCheck);
+		List<LogEntity_v2> relevantLogs = new ArrayList<>();
+			
+		UnfilteredLogs.stream().forEach((log)-> {
+			log.getAttacksNames().stream().forEach((attackName)-> {
+				if (attacksNames.contains(attackName)/* && !relevantLogs.contains(log)*/) {
+					relevantLogs.add(log);
+					return;
+				}
+			}); 
+		});
+		return relevantLogs;
 	}
 
 	

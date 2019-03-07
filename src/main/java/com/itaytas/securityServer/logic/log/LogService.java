@@ -15,6 +15,8 @@ public interface LogService {
 
 	void cleanup();
 
-	List<LogEntity_v2> getUserMaliciousLogsBetweenDates(String userId, Date fromDateToCheck, Date currentDate);
+	List<LogEntity_v2> getUserMaliciousLogsAfterDate(String userId, Date fromDateToCheck);
+	
+	List<LogEntity_v2> getUserMaliciousLogsByAttacksNamesAfterDate(String userId, List<String> attacksNames, Date fromDateToCheck);
 
 }

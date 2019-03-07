@@ -1,14 +1,22 @@
 package com.itaytas.securityServer.logic.user.jpa;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.itaytas.securityServer.aop.MyLog;
 import com.itaytas.securityServer.dal.RoleDao;
 import com.itaytas.securityServer.dal.UserDao;
+import com.itaytas.securityServer.exception.AppException;
 import com.itaytas.securityServer.exception.ResourceNotFoundException;
+import com.itaytas.securityServer.logic.user.Role;
+import com.itaytas.securityServer.logic.user.RoleName;
 import com.itaytas.securityServer.logic.user.UserEntity;
 import com.itaytas.securityServer.logic.user.UserUtilService;
 
@@ -25,16 +33,22 @@ public class JpaUserUtilService implements UserUtilService {
 	}
 
 	@Override
+	@Transactional(readOnly=true)
+	@MyLog
 	public boolean checkUsernameAvailability(String username) {
 		return !userDao.existsByUsername(username);
 	}
 
 	@Override
+	@Transactional(readOnly=true)
+	@MyLog
 	public boolean checkEmailAvailability(String email) {
 		return !userDao.existsByEmail(email);
 	}
 
 	@Override
+	@Transactional(readOnly=true)
+	@MyLog
 	public UserEntity getUserProfile(String username) {
 		Optional<UserEntity> op = this.userDao.findByUsername(username);
 		if (op.isPresent()) {
@@ -42,6 +56,19 @@ public class JpaUserUtilService implements UserUtilService {
 		} else {
 			throw new ResourceNotFoundException("User", "username", username);
 		}
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	@MyLog
+	public List<UserEntity> getAllUsersWithUserRole() {
+		Role userRole = this.roleDao
+        		.findByName(RoleName.ROLE_USER)
+                .orElseThrow(() -> new AppException("User Role not set."));
+
+		Set<Role> roles = Collections.singleton(userRole);
+		
+		return this.userDao.findByRoles(roles);
 	}
     
     

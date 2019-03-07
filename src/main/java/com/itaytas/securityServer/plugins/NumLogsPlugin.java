@@ -2,6 +2,7 @@ package com.itaytas.securityServer.plugins;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -16,25 +17,27 @@ import com.itaytas.securityServer.dal.LogDao;
 import com.itaytas.securityServer.dal.RoleDao;
 import com.itaytas.securityServer.dal.UserDao;
 import com.itaytas.securityServer.exception.AppException;
+import com.itaytas.securityServer.logic.alert.AlertEntity;
 import com.itaytas.securityServer.logic.log.LogEntity_v2;
 import com.itaytas.securityServer.logic.log.LogService;
 import com.itaytas.securityServer.logic.script.ScriptEntity;
 import com.itaytas.securityServer.logic.user.Role;
 import com.itaytas.securityServer.logic.user.RoleName;
 import com.itaytas.securityServer.logic.user.UserEntity;
+import com.itaytas.securityServer.logic.user.UserUtilService;
 
 public class NumLogsPlugin implements SystemPlugin{
 
 	private RoleDao roleDao;
-	private UserDao userDao;
+	private UserUtilService userUtilService;
 	private LogDao logDao;
 	private LogService logService;
 	private ObjectMapper jackson;
 	
 	@Autowired
-	public NumLogsPlugin(RoleDao roleDao, UserDao userDao, LogDao logDao, LogService logService) {
+	public NumLogsPlugin(RoleDao roleDao, UserUtilService userUtilService, LogDao logDao, LogService logService) {
 		this.roleDao = roleDao;
-		this.userDao = userDao;
+		this.userUtilService = userUtilService;
 		this.logDao = logDao;
 		this.logService = logService;
 	}
@@ -54,24 +57,31 @@ public class NumLogsPlugin implements SystemPlugin{
 
 	@Override
 	public Object[] invokeOperation(ScriptEntity scriptEntity) throws Exception {
-		Role userRole = this.roleDao
-        		.findByName(RoleName.ROLE_USER)
-                .orElseThrow(() -> new AppException("User Role not set."));
-
-		Set<Role> roles = Collections.singleton(userRole);
-		
+		List<AlertEntity> alerts = new ArrayList<>();
 		NumLogs numLogsObj = this.jackson.readValue(
 				this.jackson.writeValueAsString(
 						scriptEntity.getDetails()), NumLogs.class);
-		
-		List<UserEntity> users = this.userDao.findByRoles(roles);
-		Date currentDate = new Date();
+		int numLogsToCheck = numLogsObj.getNumLogs();
+				
+//		Date currentDate = new Date();
 		Date fromDateToCheck = Date.from(Instant.now().minus(Duration.ofDays(numLogsObj.getNumDaysAgo())));
 		
+		List<UserEntity> users = this.userUtilService.getAllUsersWithUserRole();
 		for (UserEntity user : users) {
 			List<LogEntity_v2> logsByUserId = 
-					this.logService.getUserMaliciousLogsBetweenDates(user.getId(), true, fromDateToCheck, currentDate);
+					this.logService.getUserMaliciousLogsByAttacksNamesAfterDate(
+							user.getId(), scriptEntity.getAttackName(), fromDateToCheck);
 			
+			if (logsByUserId.size() >= numLogsToCheck) {
+				List<String> scriptsId = new ArrayList<>();
+				scriptsId.add(scriptEntity.getScriptId());
+				List<String> logsId = new ArrayList<>();
+				logsByUserId.stream().forEach((log) -> logsId.add(log.getLogId()));
+				AlertEntity alertToAdd = 
+						new AlertEntity(
+								user.getId(), user.getName(), user.getUsername(), user.getEmail(),
+								scriptEntity.getAttackName(), logsId, scriptsId);
+			}
 		}
 		
 		
