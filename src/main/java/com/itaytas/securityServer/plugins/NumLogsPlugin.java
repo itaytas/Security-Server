@@ -3,42 +3,30 @@ package com.itaytas.securityServer.plugins;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.itaytas.securityServer.dal.LogDao;
-import com.itaytas.securityServer.dal.RoleDao;
-import com.itaytas.securityServer.dal.UserDao;
-import com.itaytas.securityServer.exception.AppException;
 import com.itaytas.securityServer.logic.alert.AlertEntity;
 import com.itaytas.securityServer.logic.log.LogEntity_v2;
 import com.itaytas.securityServer.logic.log.LogService;
 import com.itaytas.securityServer.logic.script.ScriptEntity;
-import com.itaytas.securityServer.logic.user.Role;
-import com.itaytas.securityServer.logic.user.RoleName;
 import com.itaytas.securityServer.logic.user.UserEntity;
 import com.itaytas.securityServer.logic.user.UserUtilService;
 
 public class NumLogsPlugin implements SystemPlugin{
 
-	private RoleDao roleDao;
 	private UserUtilService userUtilService;
-	private LogDao logDao;
 	private LogService logService;
 	private ObjectMapper jackson;
 	
 	@Autowired
-	public NumLogsPlugin(RoleDao roleDao, UserUtilService userUtilService, LogDao logDao, LogService logService) {
-		this.roleDao = roleDao;
+	public NumLogsPlugin(UserUtilService userUtilService, LogService logService) {
 		this.userUtilService = userUtilService;
-		this.logDao = logDao;
 		this.logService = logService;
 	}
 	
