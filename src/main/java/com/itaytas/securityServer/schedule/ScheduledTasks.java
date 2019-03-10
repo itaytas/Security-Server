@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Component;
 import com.itaytas.securityServer.dal.LogDao;
 import com.itaytas.securityServer.dal.ScriptDao;
 import com.itaytas.securityServer.dal.UserDao;
+import com.itaytas.securityServer.logic.alert.AlertEntity;
 import com.itaytas.securityServer.logic.alert.AlertService;
 import com.itaytas.securityServer.logic.script.ScriptEntity;
 import com.itaytas.securityServer.plugins.SystemPlugin;
@@ -56,26 +56,26 @@ public class ScheduledTasks {
      * Step 5: I'll try to figure it out later.
      * */
     
-//	@Scheduled(fixedRate = 5000)
+	@Scheduled(fixedRate = 5000)
 	public void findScriptsEvents() {
 		String nowDate = dateFormat.format(new Date());
 		LOG.info("The time is now " + nowDate);
 		List<ScriptEntity> scripts = this.scriptDao.findByActive(true);
-		Object[] rvArray = null;
+		List<AlertEntity> rvList = null;
 		try {
 			for (ScriptEntity scriptEntity : scripts) {
 				String type = scriptEntity.getType();
 				String className = "com.itaytas.securityServer.plugins." + type + "Plugin";
 				Class<?> theClass = Class.forName(className);
 				SystemPlugin plugin = (SystemPlugin) this.spring.getBean(theClass);
-				rvArray = plugin.invokeOperation(scriptEntity);
+				rvList = plugin.invokeOperation(scriptEntity);
 				
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 		
-		if (rvArray == null) {
+		if (rvList == null || rvList.size() == 0 || rvList.isEmpty()) {
 			LOG.info("No Alert found on: " + nowDate);
 			return;
 		}

@@ -1,5 +1,7 @@
 package com.itaytas.securityServer.logic.script.jpa;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,8 +35,18 @@ public class JpaScriptService implements ScriptService {
 	@Transactional
 	@MyLog
 	public ResponseEntity<?> addNewScript(ScriptEntity scriptEntity) {
+		
+		List<ScriptEntity> allActiveScripts = this.scriptDao.findByActive(true);
+		for (ScriptEntity activeScript : allActiveScripts) {
+			if (scriptEntity.equals(activeScript)) {
+				return new ResponseEntity(
+						new ApiResponse(true, "Script Already found!"),
+						HttpStatus.FOUND);
+			}
+		}
+		
 		ScriptEntity entity = this.scriptDao.save(scriptEntity);
-		// TODO: add assertion check for duplicate scripts
+		
 		return new ResponseEntity(
 				new ApiResponse(true, "Script for " + entity.getAttackName() + "was saved!"),
 				HttpStatus.CREATED);

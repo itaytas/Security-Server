@@ -2,8 +2,10 @@ package com.itaytas.securityServer.logic.log.jpa;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,7 +21,7 @@ import com.itaytas.securityServer.config.AppConstants;
 import com.itaytas.securityServer.dal.LogDao;
 import com.itaytas.securityServer.exception.BadRequestException;
 import com.itaytas.securityServer.exception.LogNotFoundException;
-import com.itaytas.securityServer.logic.log.LogEntity_v2;
+import com.itaytas.securityServer.logic.log.LogEntity;
 import com.itaytas.securityServer.logic.log.LogService;
 
 @Service
@@ -35,7 +37,7 @@ public class JpaLogService implements LogService {
 	@Override
 	@Transactional
 	@MyLog
-	public ResponseEntity<?> addNewLogs(String userIdentifier, List<LogEntity_v2> logs) {
+	public ResponseEntity<?> addNewLogs(String userIdentifier, List<LogEntity> logs) {
 		int numLogs = logs.size();
 		if (numLogs == 0) {
 			return new ResponseEntity(
@@ -51,18 +53,18 @@ public class JpaLogService implements LogService {
 	@Override
 	@Transactional(readOnly = true)
 	@MyLog
-	public List<LogEntity_v2> getAllLogsByUserId(String userId, int size, int page) {
+	public List<LogEntity> getAllLogsByUserId(String userId, int size, int page) {
 		validatePageNumberAndSize(page, size);
 		
-		Page<LogEntity_v2> logsPage = this.logDao.findByUserId(userId, PageRequest.of(page, size));
+		Page<LogEntity> logsPage = this.logDao.findByUserId(userId, PageRequest.of(page, size));
 		return logsPage.getContent();
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	@MyLog
-	public LogEntity_v2 getLogById(String logId) throws Exception {
-		Optional<LogEntity_v2> op = this.logDao.findById(logId);
+	public LogEntity getLogById(String logId) throws Exception {
+		Optional<LogEntity> op = this.logDao.findById(logId);
 		if (op.isPresent()) {
 			return op.get();
 		} else {
@@ -89,12 +91,12 @@ public class JpaLogService implements LogService {
 	}
 
 	@Override
-	public List<LogEntity_v2> getUserMaliciousLogsAfterDate(
+	public List<LogEntity> getUserMaliciousLogsAfterDate(
 			String userId, Date fromDateToCheck) {
 		
-		List<LogEntity_v2> allUserLogs = this.logDao.findByUserIdAndIsMalicious(userId, true);
+		List<LogEntity> allUserLogs = this.logDao.findByUserIdAndMalicious(userId, true);
 		
-		List<LogEntity_v2> relevantLogs = new ArrayList<>();
+		List<LogEntity> relevantLogs = new ArrayList<>();
 		
 		allUserLogs.stream().forEach((log) -> {
 			if (log.getCreatedAt().after(fromDateToCheck)) {
@@ -105,10 +107,10 @@ public class JpaLogService implements LogService {
 	}
 
 	@Override
-	public List<LogEntity_v2> getUserMaliciousLogsByAttacksNamesAfterDate(String userId, List<String> attacksNames,
+	public Set<LogEntity> getUserMaliciousLogsByAttacksNamesAfterDate(String userId, List<String> attacksNames,
 			Date fromDateToCheck) {
-		List<LogEntity_v2> UnfilteredLogs = getUserMaliciousLogsAfterDate(userId, fromDateToCheck);
-		List<LogEntity_v2> relevantLogs = new ArrayList<>();
+		List<LogEntity> UnfilteredLogs = getUserMaliciousLogsAfterDate(userId, fromDateToCheck);
+		List<LogEntity> relevantLogs = new ArrayList<>();
 			
 		UnfilteredLogs.stream().forEach((log)-> {
 			log.getAttacksNames().stream().forEach((attackName)-> {
@@ -118,7 +120,7 @@ public class JpaLogService implements LogService {
 				}
 			}); 
 		});
-		return relevantLogs;
+		return new HashSet<LogEntity>(relevantLogs);
 	}
 
 	

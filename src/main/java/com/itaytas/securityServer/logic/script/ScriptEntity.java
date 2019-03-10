@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import com.itaytas.securityServer.logic.audit.DateAudit;
 
 @Entity
-@Document(collection = "scripts")
+@Document(collection = "Scripts")
 public class ScriptEntity extends DateAudit {
 
 	private static final long serialVersionUID = 7399472036093751716L;
@@ -28,8 +28,9 @@ public class ScriptEntity extends DateAudit {
 	public ScriptEntity() {
 	}
 
-	public ScriptEntity(List<String> attacksNames, Boolean active, Map<String, Object> details) {
+	public ScriptEntity(String type, List<String> attacksNames, Boolean active, Map<String, Object> details) {
 		super();
+		this.type = type;
 		this.attacksNames = attacksNames;
 		this.active = active;
 		this.details = details;
@@ -82,21 +83,21 @@ public class ScriptEntity extends DateAudit {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "ScriptEntity [scriptId=" + scriptId + ", attacksNames=" + attacksNames + ", active=" + active + ", details="
-				+ details + "]";
+		return "ScriptEntity [scriptId=" + scriptId + ", type=" + type + ", attacksNames=" + attacksNames + ", active="
+				+ active + ", details=" + details + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (active ? 1231 : 1237);
+		result = prime * result + ((active == null) ? 0 : active.hashCode());
 		result = prime * result + ((attacksNames == null) ? 0 : attacksNames.hashCode());
 		result = prime * result + ((details == null) ? 0 : details.hashCode());
-		result = prime * result + ((scriptId == null) ? 0 : scriptId.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
 
@@ -109,7 +110,10 @@ public class ScriptEntity extends DateAudit {
 		if (getClass() != obj.getClass())
 			return false;
 		ScriptEntity other = (ScriptEntity) obj;
-		if (active != other.active)
+		if (active == null) {
+			if (other.active != null)
+				return false;
+		} else if (!active.equals(other.active))
 			return false;
 		if (attacksNames == null) {
 			if (other.attacksNames != null)
@@ -121,12 +125,14 @@ public class ScriptEntity extends DateAudit {
 				return false;
 		} else if (!details.equals(other.details))
 			return false;
-		if (scriptId == null) {
-			if (other.scriptId != null)
+		if (type == null) {
+			if (other.type != null)
 				return false;
-		} else if (!scriptId.equals(other.scriptId))
+		} else if (!type.equals(other.type))
 			return false;
 		return true;
 	}
+
+
 
 }

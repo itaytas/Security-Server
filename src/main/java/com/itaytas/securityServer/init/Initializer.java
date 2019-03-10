@@ -1,6 +1,8 @@
 package com.itaytas.securityServer.init;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -10,8 +12,8 @@ import org.springframework.stereotype.Component;
 
 import com.itaytas.securityServer.aop.MyLog;
 import com.itaytas.securityServer.dal.RoleDao;
-import com.itaytas.securityServer.dal.ScriptDao;
 import com.itaytas.securityServer.logic.script.ScriptEntity;
+import com.itaytas.securityServer.logic.script.ScriptService;
 import com.itaytas.securityServer.logic.user.Role;
 import com.itaytas.securityServer.logic.user.RoleName;
 
@@ -19,13 +21,13 @@ import com.itaytas.securityServer.logic.user.RoleName;
 public class Initializer {
 
 	private RoleDao roleDao;
-	private ScriptDao scriptDao;
+	private ScriptService scriptService;
 
 	@Autowired
-	public Initializer(RoleDao roleDao, ScriptDao scriptDao) {
+	public Initializer(RoleDao roleDao, ScriptService scriptService) {
 		super();
 		this.roleDao = roleDao;
-		this.scriptDao = scriptDao;
+		this.scriptService = scriptService;
 	}
 
 	@PostConstruct
@@ -36,20 +38,23 @@ public class Initializer {
 
 	@MyLog
 	private void createDefaultScripts() {
-//		createSqlInjectionScript("sqlInjection", true, 2);
+		createNumLogsScript();
 	}
 
-	/*private void createSqlInjectionScript(String attackName, boolean active, int numLogs) {
-		Map<String, Object> sqlInjection1Details = new HashMap<>();
-		sqlInjection1Details.put("numLogs", numLogs);
+	
+	@MyLog
+	private void createNumLogsScript() {
+		List<String> attacksNames = new ArrayList<>();
+		attacksNames.add("SqlInjection");
+		attacksNames.add("XSS");
 		
-		ScriptEntity sqlInjection1 = new ScriptEntity(attackName, active, sqlInjection1Details);
+		Map<String, Object> numLogsDetails = new HashMap<>();
+		numLogsDetails.put("numLogs", 3);
+		numLogsDetails.put("numDaysAgo", 1);
 		
-		if (this.scriptDao.findByAttackNameAndDetails(
-				sqlInjection1.getAttackName(), sqlInjection1Details) == null) {
-			this.scriptDao.save(sqlInjection1);
-		}
-	}*/
+		ScriptEntity scriptEntity = new ScriptEntity("NumLogs", attacksNames, true, numLogsDetails);
+		this.scriptService.addNewScript(scriptEntity);
+	}
 
 	@MyLog
 	private void createDefaultRoles() {
@@ -64,7 +69,5 @@ public class Initializer {
 			roleDao.save(userRole);
 		}
 	}
-	
-	
 	
 }

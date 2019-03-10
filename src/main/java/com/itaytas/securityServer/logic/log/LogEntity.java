@@ -12,8 +12,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import com.itaytas.securityServer.logic.audit.DateAudit;
 
 @Entity
-@Document(collection = "logs")
-public class LogEntity_v2 extends DateAudit {
+@Document(collection = "Logs")
+public class LogEntity extends DateAudit {
 
 	private static final long serialVersionUID = -2799328143852341429L;
 
@@ -27,11 +27,11 @@ public class LogEntity_v2 extends DateAudit {
 	private String sourcePort;
 	private String destinationPort;
 	private String httpData;
-	private Boolean isMalicious;
+	private Boolean malicious;
 	private List<String> attacksNames;
 
-	public LogEntity_v2(String userId, String protocol, String source, String destination, String sourcePort,
-			String destinationPort, String httpData, Boolean isMalicious, List<String> attacksNames) {
+	public LogEntity(String userId, String protocol, String source, String destination, String sourcePort,
+			String destinationPort, String httpData, Boolean malicious, List<String> attacksNames) {
 		super();
 		this.userId = userId;
 		this.protocol = protocol;
@@ -40,7 +40,7 @@ public class LogEntity_v2 extends DateAudit {
 		this.sourcePort = sourcePort;
 		this.destinationPort = destinationPort;
 		this.httpData = httpData;
-		this.isMalicious = isMalicious;
+		this.malicious = malicious;
 		this.attacksNames = attacksNames;
 	}
 
@@ -111,11 +111,11 @@ public class LogEntity_v2 extends DateAudit {
 	}
 
 	public Boolean isMalicious() {
-		return isMalicious;
+		return malicious;
 	}
 
 	public void setMalicious(Boolean isMalicious) {
-		this.isMalicious = isMalicious;
+		this.malicious = isMalicious;
 	}
 
 	public static long getSerialversionuid() {
@@ -134,7 +134,7 @@ public class LogEntity_v2 extends DateAudit {
 	public String toString() {
 		return "LogEntity_v2 [logId=" + logId + ", userId=" + userId + ", protocol=" + protocol + ", source=" + source
 				+ ", destination=" + destination + ", sourcePort=" + sourcePort + ", destinationPort=" + destinationPort
-				+ ", httpData=" + httpData + ", isMalicious=" + isMalicious + ", attacksNames=" + attacksNames + "]";
+				+ ", httpData=" + httpData + ", isMalicious=" + malicious + ", attacksNames=" + attacksNames + "]";
 	}
 
 }

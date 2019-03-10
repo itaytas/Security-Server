@@ -5,29 +5,36 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itaytas.securityServer.aop.MyLog;
 import com.itaytas.securityServer.logic.alert.AlertEntity;
-import com.itaytas.securityServer.logic.log.LogEntity_v2;
+import com.itaytas.securityServer.logic.alert.AlertService;
+import com.itaytas.securityServer.logic.log.LogEntity;
 import com.itaytas.securityServer.logic.log.LogService;
 import com.itaytas.securityServer.logic.script.ScriptEntity;
 import com.itaytas.securityServer.logic.user.UserEntity;
 import com.itaytas.securityServer.logic.user.UserUtilService;
 
+@Component
 public class NumLogsPlugin implements SystemPlugin{
 
 	private UserUtilService userUtilService;
 	private LogService logService;
+	private AlertService alertService;
 	private ObjectMapper jackson;
 	
 	@Autowired
-	public NumLogsPlugin(UserUtilService userUtilService, LogService logService) {
+	public NumLogsPlugin(UserUtilService userUtilService, LogService logService, AlertService alertService) {
 		this.userUtilService = userUtilService;
 		this.logService = logService;
+		this.alertService = alertService;
 	}
 	
 	@PostConstruct
@@ -43,8 +50,9 @@ public class NumLogsPlugin implements SystemPlugin{
      * Step 5: I'll try to figure it out later.
      * */
 
+	@MyLog
 	@Override
-	public Object[] invokeOperation(ScriptEntity scriptEntity) throws Exception {
+	public List<AlertEntity> invokeOperation(ScriptEntity scriptEntity) throws Exception {
 		List<AlertEntity> alerts = new ArrayList<>();
 		NumLogs numLogsObj = this.jackson.readValue(
 				this.jackson.writeValueAsString(
@@ -56,26 +64,25 @@ public class NumLogsPlugin implements SystemPlugin{
 		
 		List<UserEntity> users = this.userUtilService.getAllUsersWithUserRole();
 		for (UserEntity user : users) {
-			List<LogEntity_v2> logsByUserId = 
+			Set<LogEntity> setOfLogsByUserId = 
 					this.logService.getUserMaliciousLogsByAttacksNamesAfterDate(
 							user.getId(), scriptEntity.getAttackName(), fromDateToCheck);
 			
-			if (logsByUserId.size() >= numLogsToCheck) {
+						
+			if (setOfLogsByUserId.size() >= numLogsToCheck) {
 				List<String> scriptsId = new ArrayList<>();
 				scriptsId.add(scriptEntity.getScriptId());
 				List<String> logsId = new ArrayList<>();
-				logsByUserId.stream().forEach((log) -> logsId.add(log.getLogId()));
+				setOfLogsByUserId.stream().forEach((log) -> logsId.add(log.getLogId()));
 				AlertEntity alertToAdd = 
 						new AlertEntity(
 								user.getId(), user.getName(), user.getUsername(), user.getEmail(),
 								scriptEntity.getAttackName(), logsId, scriptsId);
+				
+				alerts.add(this.alertService.addNewAlert(alertToAdd));
 			}
 		}
-		
-		
-		
-		
-		return null;
+		return alerts;
 	}
 
 }

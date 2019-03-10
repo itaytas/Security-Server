@@ -15,10 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.itaytas.securityServer.aop.MyLog;
-import com.itaytas.securityServer.api.logs.LogRequest_v1;
-import com.itaytas.securityServer.api.logs.LogRequest_v2;
-import com.itaytas.securityServer.logic.log.LogEntity_v1;
-import com.itaytas.securityServer.logic.log.LogEntity_v2;
+import com.itaytas.securityServer.api.logs.LogRequest;
+import com.itaytas.securityServer.logic.log.LogEntity;
 import com.itaytas.securityServer.logic.log.LogService;
 import com.itaytas.securityServer.security.CurrentUser;
 import com.itaytas.securityServer.security.UserPrincipal;
@@ -39,12 +37,13 @@ public class LogsRestController {
 	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> addNewLogs(
 			@CurrentUser UserPrincipal currentUser,
-			@Valid @RequestBody LogRequest_v2[] logRequests) {
+			@Valid @RequestBody LogRequest[] logRequests) {
 		// convert LogRequest_v2[] -> List<LogEntity_v2>
-		List<LogEntity_v2> logs = new ArrayList<>();
+		Stream.of(logRequests).forEach((log) -> System.err.println(log));
+		List<LogEntity> logs = new ArrayList<>();
 		Stream.of(logRequests).map(o -> o.toEntity(currentUser.getId())).forEach(o -> logs.add(o));
-		
+		System.err.println(logs);
 		return this.logService.addNewLogs(currentUser.getUsername(), logs);
 	}
-
+	
 }

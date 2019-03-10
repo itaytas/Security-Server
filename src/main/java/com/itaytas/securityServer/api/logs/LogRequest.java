@@ -2,26 +2,25 @@ package com.itaytas.securityServer.api.logs;
 
 import java.util.List;
 
-import com.itaytas.securityServer.logic.log.LogEntity_v2;
+import com.itaytas.securityServer.logic.log.LogEntity;
 
-public class LogRequest_v2 {
+public class LogRequest {
 
 	// Logs Identifiers
-
 	private String protocol;
 	private String source;
 	private String destination;
 	private String sourcePort;
 	private String destinationPort;
 	private String httpData;
-	private boolean isMalicious;
+	private boolean malicious;
 	private List<String> attacksNames;
 
-	public LogRequest_v2() {
+	public LogRequest() {
 	}
 
-	public LogRequest_v2(String protocol, String source, String destination, String sourcePort, String destinationPort,
-			String httpData, boolean isMalicious, List<String> attacksNames) {
+	public LogRequest(String protocol, String source, String destination, String sourcePort, String destinationPort,
+			String httpData, boolean malicious, List<String> attacksNames) {
 		super();
 		this.protocol = protocol;
 		this.source = source;
@@ -29,13 +28,15 @@ public class LogRequest_v2 {
 		this.sourcePort = sourcePort;
 		this.destinationPort = destinationPort;
 		this.httpData = httpData;
-		this.isMalicious = isMalicious;
+		this.malicious = malicious;
 		this.attacksNames = attacksNames;
 	}
 
-	public LogEntity_v2 toEntity(String userId) {
-		LogEntity_v2 entity = new LogEntity_v2(userId, this.protocol, this.source, this.destination,
-				this.sourcePort, this.destinationPort, this.httpData, this.isMalicious, this.attacksNames);
+	public LogEntity toEntity(String userId) {
+		LogEntity entity = 
+				new LogEntity(userId, this.protocol, this.source, this.destination,
+								 this.sourcePort, this.destinationPort, this.httpData,
+								 this.malicious, this.attacksNames);
 		return entity;
 	}
 
@@ -88,11 +89,11 @@ public class LogRequest_v2 {
 	}
 
 	public boolean isMalicious() {
-		return isMalicious;
+		return malicious;
 	}
 
 	public void setMalicious(boolean isMalicious) {
-		this.isMalicious = isMalicious;
+		this.malicious = isMalicious;
 	}
 
 	public List<String> getAttacksNames() {
@@ -107,7 +108,7 @@ public class LogRequest_v2 {
 	public String toString() {
 		return "LogRequest_v2 [protocol=" + protocol + ", source=" + source + ", destination=" + destination
 				+ ", sourcePort=" + sourcePort + ", destinationPort=" + destinationPort + ", httpData=" + httpData
-				+ ", isMalicious=" + isMalicious + ", attacksNames=" + attacksNames + "]";
+				+ ", isMalicious=" + malicious + ", attacksNames=" + attacksNames + "]";
 	}
 
 }

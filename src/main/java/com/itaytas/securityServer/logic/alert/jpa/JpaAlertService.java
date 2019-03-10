@@ -60,10 +60,14 @@ public class JpaAlertService implements AlertService{
 		Boolean foundSimilar = false;
 		List<AlertEntity> userAlerts = this.alertDao.findByUserId(alertEntity.getUserId());
 		for (AlertEntity alert : userAlerts) {
-			Boolean sameAttacksNames = alert.getAttacksNames().equals(alertEntity.getAttacksNames());
+			/*Boolean sameAttacksNames = alert.getAttacksNames().equals(alertEntity.getAttacksNames());
 			Boolean sameLogsId = alert.getLogsId().equals(alertEntity.getLogsId());			
 			Boolean sameScriptsId = alert.getScriptsId().equals(alertEntity.getScriptsId());
 			if (sameAttacksNames && sameLogsId && sameScriptsId ) {
+				foundSimilar = true;
+			}*/
+			
+			if (alertEntity.equals(alert)) {
 				foundSimilar = true;
 			}
 		}
