@@ -51,12 +51,11 @@ public class ScheduledTasks {
     /**
      * Step 1: Get all active scripts from DB.
      * Step 2: for each script invoke operation of plug-in using script's type [String]
-     * Step 3: Get return value (Null / Alert).
+     * Step 3: Get return value (Null / Alert / Exception).
      * Step 4: Check if the return value is not Null and then try to save it.
-     * Step 5: I'll try to figure it out later.
-     * */
+     */
     
-	@Scheduled(fixedRate = 5000)
+	@Scheduled(fixedRate = 10000)
 	public void findScriptsEvents() {
 		String nowDate = dateFormat.format(new Date());
 		LOG.info("The time is now " + nowDate);
@@ -72,7 +71,9 @@ public class ScheduledTasks {
 				
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			LOG.info("ERROR: " + e.getMessage());
+			return;
+//			throw new RuntimeException(e);
 		}
 		
 		if (rvList == null || rvList.size() == 0 || rvList.isEmpty()) {
@@ -80,12 +81,8 @@ public class ScheduledTasks {
 			return;
 		}
 		
-		
-		
-		
 	}
     
-
 	public static SimpleDateFormat getDateformat() {
 		return dateFormat;
 	}
@@ -121,6 +118,5 @@ public class ScheduledTasks {
 	public void setAlertService(AlertService alertService) {
 		this.alertService = alertService;
 	}
-    
     
 }

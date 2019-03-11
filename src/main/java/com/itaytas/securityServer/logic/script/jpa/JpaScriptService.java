@@ -30,7 +30,6 @@ public class JpaScriptService implements ScriptService {
 		this.scriptDao = scriptDao;
 	}
 
-	
 	@Override
 	@Transactional
 	@MyLog
@@ -79,8 +78,8 @@ public class JpaScriptService implements ScriptService {
 			throw new BadRequestException("Page number cannot be less than zero.");
 		}
 
-		if (size > AppConstants.MAX_PAGE_SIZE) {
-			throw new BadRequestException("Page size must not be greater than " + AppConstants.MAX_PAGE_SIZE);
+		if (size > AppConstants.MAX_PAGE_SIZE || size < 0) {
+			throw new BadRequestException("Page size must be between 0 and " + AppConstants.MAX_PAGE_SIZE);
 		}
 	}
 }

@@ -5,7 +5,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
@@ -54,26 +53,26 @@ public class NumLogsPlugin implements SystemPlugin{
 	@Override
 	public List<AlertEntity> invokeOperation(ScriptEntity scriptEntity) throws Exception {
 		List<AlertEntity> alerts = new ArrayList<>();
+		
 		NumLogs numLogsObj = this.jackson.readValue(
 				this.jackson.writeValueAsString(
 						scriptEntity.getDetails()), NumLogs.class);
+		
 		int numLogsToCheck = numLogsObj.getNumLogs();
-				
-//		Date currentDate = new Date();
-		Date fromDateToCheck = Date.from(Instant.now().minus(Duration.ofDays(numLogsObj.getNumDaysAgo())));
+		Date fromDateToCheck = 
+				Date.from(Instant.now().minus(Duration.ofDays(numLogsObj.getNumDaysAgo())));
 		
 		List<UserEntity> users = this.userUtilService.getAllUsersWithUserRole();
 		for (UserEntity user : users) {
-			Set<LogEntity> setOfLogsByUserId = 
+			List<LogEntity> logsByUserId = 
 					this.logService.getUserMaliciousLogsByAttacksNamesAfterDate(
 							user.getId(), scriptEntity.getAttackName(), fromDateToCheck);
 			
-						
-			if (setOfLogsByUserId.size() >= numLogsToCheck) {
+			if (logsByUserId.size() >= numLogsToCheck) {
 				List<String> scriptsId = new ArrayList<>();
 				scriptsId.add(scriptEntity.getScriptId());
 				List<String> logsId = new ArrayList<>();
-				setOfLogsByUserId.stream().forEach((log) -> logsId.add(log.getLogId()));
+				logsByUserId.stream().forEach((log) -> logsId.add(log.getLogId()));
 				AlertEntity alertToAdd = 
 						new AlertEntity(
 								user.getId(), user.getName(), user.getUsername(), user.getEmail(),

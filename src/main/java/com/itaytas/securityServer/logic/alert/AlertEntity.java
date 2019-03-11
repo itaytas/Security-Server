@@ -157,8 +157,6 @@ public class AlertEntity extends DateAudit {
 			if (other.logsId != null)
 				return false;
 		} else if (!logsId.equals(other.logsId)) {
-			System.err.println(this + "\nVS:");
-			System.err.println(other);
 			return false;
 		}
 		if (scriptsId == null) {
