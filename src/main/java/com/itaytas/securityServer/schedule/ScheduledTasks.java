@@ -55,7 +55,7 @@ public class ScheduledTasks {
      * Step 4: Check if the return value is not Null and then try to save it.
      */
     
-	@Scheduled(fixedRate = 10000)
+	@Scheduled(fixedRate = 90000)
 	public void findScriptsEvents() {
 		String nowDate = dateFormat.format(new Date());
 		LOG.info("The time is now " + nowDate);

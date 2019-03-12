@@ -1,3 +1,4 @@
+
 package com.itaytas.securityServer.logic.user;
 
 import java.util.List;
@@ -11,4 +12,6 @@ public interface UserUtilService {
 	UserEntity getUserProfile(String username);
 	
 	List<UserEntity> getAllUsersWithUserRole();
+
+	List<UserEntity> getAllRoleUsers();
 }

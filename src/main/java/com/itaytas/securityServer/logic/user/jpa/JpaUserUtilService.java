@@ -1,5 +1,6 @@
 package com.itaytas.securityServer.logic.user.jpa;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -71,5 +72,23 @@ public class JpaUserUtilService implements UserUtilService {
 		return this.userDao.findByRoles(roles);
 	}
     
+	@Override
+	@Transactional(readOnly=true)
+	@MyLog
+	public List<UserEntity> getAllRoleUsers() {
+		List<UserEntity> allUsers = (List<UserEntity>) this.userDao.findAll();
+		List<UserEntity> usersWithUserRole = new ArrayList<>();
+		Role userRole = this.roleDao
+        		.findByName(RoleName.ROLE_USER)
+                .orElseThrow(() -> new AppException("User Role not set."));
+		
+		allUsers.stream().forEach((user)-> {
+			if (user.getRoles().contains(userRole)) {
+				usersWithUserRole.add(user);
+			}
+		});
+		
+		return usersWithUserRole;
+	}
     
 }

@@ -62,7 +62,8 @@ public class NumLogsPlugin implements SystemPlugin{
 		Date fromDateToCheck = 
 				Date.from(Instant.now().minus(Duration.ofDays(numLogsObj.getNumDaysAgo())));
 		
-		List<UserEntity> users = this.userUtilService.getAllUsersWithUserRole();
+		List<UserEntity> users = this.userUtilService.getAllRoleUsers();
+		System.err.println(users);
 		for (UserEntity user : users) {
 			List<LogEntity> logsByUserId = 
 					this.logService.getUserMaliciousLogsByAttacksNamesAfterDate(
