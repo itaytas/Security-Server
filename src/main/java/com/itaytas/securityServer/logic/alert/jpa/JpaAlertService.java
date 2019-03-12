@@ -70,13 +70,6 @@ public class JpaAlertService implements AlertService{
 		Boolean foundSimilar = false;
 		List<AlertEntity> userAlerts = this.alertDao.findByUserId(alertEntity.getUserId());
 		for (AlertEntity alert : userAlerts) {
-			/*Boolean sameAttacksNames = alert.getAttacksNames().equals(alertEntity.getAttacksNames());
-			Boolean sameLogsId = alert.getLogsId().equals(alertEntity.getLogsId());			
-			Boolean sameScriptsId = alert.getScriptsId().equals(alertEntity.getScriptsId());
-			if (sameAttacksNames && sameLogsId && sameScriptsId ) {
-				foundSimilar = true;
-			}*/
-			
 			if (alertEntity.equals(alert)) {
 				foundSimilar = true;
 			}
@@ -92,7 +85,7 @@ public class JpaAlertService implements AlertService{
 	@Override
 	@Transactional(readOnly = true)
 	@MyLog
-	public PagedResponse<AlertEntity> getAllAlertByUserId(String userId, int page, int size) {
+	public PagedResponse<AlertEntity> getAllAlerts(int page, int size) {
 		validatePageNumberAndSize(page, size);
 
 		Page<AlertEntity> alertPage = this.alertDao
@@ -101,7 +94,7 @@ public class JpaAlertService implements AlertService{
 		return new PagedResponse<>(alertPage.getContent(), alertPage.getNumber(), alertPage.getSize(),
 				alertPage.getTotalElements(), alertPage.getTotalPages(), alertPage.isLast());
 	}
-
+	
 	@Override
 	@Transactional
 	@MyLog

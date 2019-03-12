@@ -1,10 +1,12 @@
 package com.itaytas.securityServer.plugins;
 
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 
@@ -20,10 +22,13 @@ import com.itaytas.securityServer.logic.log.LogService;
 import com.itaytas.securityServer.logic.script.ScriptEntity;
 import com.itaytas.securityServer.logic.user.UserEntity;
 import com.itaytas.securityServer.logic.user.UserUtilService;
+import com.itaytas.securityServer.schedule.ScheduledTasks;
 
 @Component
 public class NumLogsPlugin implements SystemPlugin{
 
+	private static final Logger LOG = Logger.getLogger(ScheduledTasks.class.getName());
+    
 	private UserUtilService userUtilService;
 	private LogService logService;
 	private AlertService alertService;
@@ -79,7 +84,11 @@ public class NumLogsPlugin implements SystemPlugin{
 								user.getId(), user.getName(), user.getUsername(), user.getEmail(),
 								scriptEntity.getAttackName(), logsId, scriptsId);
 				
-				alerts.add(this.alertService.addNewAlert(alertToAdd));
+				try {
+					alerts.add(this.alertService.addNewAlert(alertToAdd));
+				} catch (Exception e) {
+					LOG.info("No Alert found for : " + alertToAdd.getUserFullName());
+				}
 			}
 		}
 		return alerts;

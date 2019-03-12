@@ -6,7 +6,7 @@ public interface AlertService {
 	
 	AlertEntity addNewAlert(AlertEntity alertEntity) throws Exception;
 	
-	PagedResponse<AlertEntity> getAllAlertByUserId(String userId, int page, int size);
+	PagedResponse<AlertEntity> getAllAlerts(int page, int size);
 
 	void cleanup();
 }

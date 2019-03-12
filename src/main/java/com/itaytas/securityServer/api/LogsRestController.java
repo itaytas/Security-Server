@@ -28,7 +28,7 @@ public class LogsRestController {
 	private LogService logService;
 
 	@Autowired
-	public void setLogService(LogService logService) {
+	public LogsRestController(LogService logService) {
 		this.logService = logService;
 	}
 
