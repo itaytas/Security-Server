@@ -8,7 +8,10 @@ public interface ScriptService {
 	
 	ResponseEntity<?> addNewScript(ScriptEntity scriptEntity);
 	
+	ResponseEntity<?> updateScript(String entityId, ScriptEntity entityUpdates);
+	
 	PagedResponse<ScriptEntity> getAllScripts(int page, int size);
 	
 	void cleanup();
+	
 }

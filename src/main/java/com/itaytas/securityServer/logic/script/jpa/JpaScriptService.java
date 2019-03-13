@@ -38,7 +38,7 @@ public class JpaScriptService implements ScriptService {
 		List<ScriptEntity> allActiveScripts = this.scriptDao.findByActive(true);
 		for (ScriptEntity activeScript : allActiveScripts) {
 			if (scriptEntity.equals(activeScript)) {
-				return new ResponseEntity(
+				return new ResponseEntity<>(
 						new ApiResponse(true, "Script Already found!"),
 						HttpStatus.FOUND);
 			}
@@ -46,10 +46,45 @@ public class JpaScriptService implements ScriptService {
 		
 		ScriptEntity entity = this.scriptDao.save(scriptEntity);
 		
-		return new ResponseEntity(
+		return new ResponseEntity<>(
 				new ApiResponse(true, "Script for " + entity.getAttackName() + "was saved!"),
 				HttpStatus.CREATED);
 	}
+	
+	@Override
+	@Transactional
+	@MyLog
+	public ResponseEntity<?> updateScript(String entityId, ScriptEntity entityUpdates) {
+		if(this.scriptDao.existsById(entityId)) {
+            return new ResponseEntity<>(
+            			new ApiResponse(false, "There is no script with id: " + entityId),
+            			HttpStatus.BAD_REQUEST);
+        }
+		
+		ScriptEntity existing = this.scriptDao.findById(entityId).get();
+		
+		// Compare between existing object and entityUpdates object
+		if (!existing.getType().equals(entityUpdates.getType()) && entityUpdates.getType() != null && !entityUpdates.getType().isEmpty()) {
+			existing.setType(entityUpdates.getType());
+		}
+		if (!existing.getAttackName().equals(entityUpdates.getAttackName()) && entityUpdates.getAttackName() != null && !entityUpdates.getAttackName().isEmpty()) {
+			existing.setAttackName(entityUpdates.getAttackName());
+		}
+		if (!existing.isActive().equals(entityUpdates.isActive()) && entityUpdates.isActive() != null) {
+			existing.setActive(entityUpdates.isActive());
+		}
+		if (!existing.getDetails().equals(entityUpdates.getDetails()) && entityUpdates.getDetails() != null && !entityUpdates.getDetails().isEmpty()) {
+			existing.setDetails(entityUpdates.getDetails());
+		}
+		
+		ScriptEntity savedUpdated = this.scriptDao.save(existing);
+		
+		return new ResponseEntity<>(
+				new ApiResponse(true, "Script for " + savedUpdated.getAttackName() + "was updated!"),
+				HttpStatus.CREATED);
+	}
+	
+	
 
 	@Override
 	@Transactional(readOnly = true)
