@@ -40,7 +40,7 @@ public class JpaScriptService implements ScriptService {
 			if (scriptEntity.equals(activeScript)) {
 				return new ResponseEntity<>(
 						new ApiResponse(true, "Script Already found!"),
-						HttpStatus.FOUND);
+						HttpStatus.BAD_REQUEST);
 			}
 		}
 		
@@ -55,7 +55,7 @@ public class JpaScriptService implements ScriptService {
 	@Transactional
 	@MyLog
 	public ResponseEntity<?> updateScript(String entityId, ScriptEntity entityUpdates) {
-		if(this.scriptDao.existsById(entityId)) {
+		if(!this.scriptDao.existsById(entityId)) {
             return new ResponseEntity<>(
             			new ApiResponse(false, "There is no script with id: " + entityId),
             			HttpStatus.BAD_REQUEST);
@@ -80,7 +80,7 @@ public class JpaScriptService implements ScriptService {
 		ScriptEntity savedUpdated = this.scriptDao.save(existing);
 		
 		return new ResponseEntity<>(
-				new ApiResponse(true, "Script for " + savedUpdated.getAttackName() + "was updated!"),
+				new ApiResponse(true, "Script with id: " + savedUpdated.getScriptId() + "was updated!"),
 				HttpStatus.CREATED);
 	}
 	

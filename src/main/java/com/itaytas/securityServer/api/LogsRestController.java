@@ -38,7 +38,7 @@ public class LogsRestController {
 	public ResponseEntity<?> addNewLogs(
 			@CurrentUser UserPrincipal currentUser,
 			@Valid @RequestBody LogRequest[] logRequests) {
-		// convert LogRequest_v2[] -> List<LogEntity_v2>
+		// convert LogRequest[] -> List<LogEntity>
 		Stream.of(logRequests).forEach((log) -> System.err.println(log));
 		List<LogEntity> logs = new ArrayList<>();
 		Stream.of(logRequests).map(o -> o.toEntity(currentUser.getId())).forEach(o -> logs.add(o));

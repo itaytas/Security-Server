@@ -37,7 +37,4 @@ public class AlertsRestController {
 		return this.alertService.getAllAlerts(page, size);
 	}
 	
-	
-	
-	
 }

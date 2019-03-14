@@ -65,13 +65,13 @@ public class JpaAuthService implements AuthService{
 	@MyLog
 	public ResponseEntity<?> registerUser(String name, String username, String email, String password) {
 		if(userDao.existsByUsername(username)) {
-            return new ResponseEntity(
+            return new ResponseEntity<>(
             			new ApiResponse(false, "Username is already taken!"),
             			HttpStatus.BAD_REQUEST);
         }
 
         if(userDao.existsByEmail(email)) {
-            return new ResponseEntity(
+            return new ResponseEntity<>(
             			new ApiResponse(false, "Email Address already in use!"),
             			HttpStatus.BAD_REQUEST);
         }
@@ -88,6 +88,47 @@ public class JpaAuthService implements AuthService{
         user.setRoles(Collections.singleton(userRole));
 
         UserEntity result = userDao.save(user);
+        
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentContextPath()
+                .path("/api/users/{username}")
+                .buildAndExpand(result.getUsername())
+                .toUri();
+
+        return ResponseEntity
+        		.created(location)
+        		.body(new ApiResponse(true, "User registered successfully"));
+
+	}
+	
+	@Override
+	@Transactional
+	@MyLog
+	public ResponseEntity<?> addAdmin(String name, String username, String email, String password) {
+		if(userDao.existsByUsername(username)) {
+            return new ResponseEntity<>(
+            			new ApiResponse(false, "Username is already taken!"),
+            			HttpStatus.BAD_REQUEST);
+        }
+
+        if(userDao.existsByEmail(email)) {
+            return new ResponseEntity<>(
+            			new ApiResponse(false, "Email Address already in use!"),
+            			HttpStatus.BAD_REQUEST);
+        }
+        
+     // Creating admin's account
+        UserEntity admin = new UserEntity(name, username, email, password);
+
+        admin.setPassword(passwordEncoder.encode(admin.getPassword()));
+
+        Role userRole = roleDao
+			        		.findByName(RoleName.ROLE_ADMIN)
+			                .orElseThrow(() -> new AppException("User Role not set."));
+
+        admin.setRoles(Collections.singleton(userRole));
+
+        UserEntity result = userDao.save(admin);
         
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath()

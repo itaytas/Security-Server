@@ -14,6 +14,7 @@ import com.itaytas.securityServer.aop.MyLog;
 import com.itaytas.securityServer.dal.RoleDao;
 import com.itaytas.securityServer.logic.script.ScriptEntity;
 import com.itaytas.securityServer.logic.script.ScriptService;
+import com.itaytas.securityServer.logic.user.AuthService;
 import com.itaytas.securityServer.logic.user.Role;
 import com.itaytas.securityServer.logic.user.RoleName;
 
@@ -22,18 +23,26 @@ public class Initializer {
 
 	private RoleDao roleDao;
 	private ScriptService scriptService;
+	private AuthService authService;
 
 	@Autowired
-	public Initializer(RoleDao roleDao, ScriptService scriptService) {
+	public Initializer(RoleDao roleDao, ScriptService scriptService, AuthService authService) {
 		super();
 		this.roleDao = roleDao;
 		this.scriptService = scriptService;
+		this.authService = authService;
 	}
 
 	@PostConstruct
 	public void init() throws Exception {
 		createDefaultRoles();
 		createDefaultScripts();
+		createDefaulAdmin();
+	}
+
+	@MyLog
+	private void createDefaulAdmin() {
+		this.authService.addAdmin("Admin", "admin", "itayfinalprojectafeka@gmail.com", "Admin4FinalProject");
 	}
 
 	@MyLog
