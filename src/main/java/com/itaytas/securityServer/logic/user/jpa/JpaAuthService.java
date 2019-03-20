@@ -22,6 +22,7 @@ import com.itaytas.securityServer.api.response.JwtAuthenticationResponse;
 import com.itaytas.securityServer.dal.RoleDao;
 import com.itaytas.securityServer.dal.UserDao;
 import com.itaytas.securityServer.exception.AppException;
+import com.itaytas.securityServer.logic.sniffer.SnifferConfigService;
 import com.itaytas.securityServer.logic.user.AuthService;
 import com.itaytas.securityServer.logic.user.Role;
 import com.itaytas.securityServer.logic.user.RoleName;
@@ -34,15 +35,18 @@ public class JpaAuthService implements AuthService{
     private AuthenticationManager authenticationManager;
     private UserDao userDao;
     private RoleDao roleDao;
+    private SnifferConfigService snifferConfigService;
     private PasswordEncoder passwordEncoder;
     private JwtTokenProvider tokenProvider;
+    
 	
     @Autowired
 	public JpaAuthService(AuthenticationManager authenticationManager, UserDao userDao, RoleDao roleDao,
-			PasswordEncoder passwordEncoder, JwtTokenProvider tokenProvider) {
+			SnifferConfigService snifferConfigService, PasswordEncoder passwordEncoder, JwtTokenProvider tokenProvider) {
 		this.authenticationManager = authenticationManager;
 		this.userDao = userDao;
 		this.roleDao = roleDao;
+		this.snifferConfigService = snifferConfigService;
 		this.passwordEncoder = passwordEncoder;
 		this.tokenProvider = tokenProvider;
 	}
@@ -88,6 +92,10 @@ public class JpaAuthService implements AuthService{
         user.setRoles(Collections.singleton(userRole));
 
         UserEntity result = userDao.save(user);
+        
+        // Create Initial Sniffer Config File for the new User 
+        String userId = result.getId();
+        this.snifferConfigService.createInitialSnifferConfigFileForNewUser(userId);
         
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath()

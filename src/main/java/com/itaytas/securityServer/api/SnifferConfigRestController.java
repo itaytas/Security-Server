@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,54 +14,56 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.itaytas.securityServer.aop.MyLog;
 import com.itaytas.securityServer.api.response.PagedResponse;
-import com.itaytas.securityServer.api.script.ScriptRequest;
+import com.itaytas.securityServer.api.sniffer.SnffierConfigRequest;
 import com.itaytas.securityServer.config.AppConstants;
-import com.itaytas.securityServer.logic.script.ScriptEntity;
-import com.itaytas.securityServer.logic.script.ScriptService;
+import com.itaytas.securityServer.logic.sniffer.SnifferConfigEntity;
+import com.itaytas.securityServer.logic.sniffer.SnifferConfigService;
 import com.itaytas.securityServer.security.CurrentUser;
 import com.itaytas.securityServer.security.UserPrincipal;
 
 @RestController
-@RequestMapping("/api/scripts")
-public class ScriptsRestController {
+@RequestMapping("/api/sniffer")
+public class SnifferConfigRestController {
+
+	// @PreAuthorize("hasRole('ROLE_VIEWER') or hasRole('ROLE_EDITOR')")
 	
-	private ScriptService scriptService;
+	private SnifferConfigService snifferConfigService;
 	
 	@Autowired
-	public ScriptsRestController(ScriptService scriptService) {
-		this.scriptService = scriptService;
+	public SnifferConfigRestController(SnifferConfigService snifferConfigService) {
+		this.snifferConfigService = snifferConfigService;
 	}
 	
 	@MyLog
 	@GetMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")
-    public PagedResponse<ScriptEntity> getAllScripts(
+    public PagedResponse<SnifferConfigEntity> getAllSnifferConfigFiles(
     		@CurrentUser UserPrincipal currentUser,
     		@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size,
 			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page) {
 		
-		return this.scriptService.getAllScripts(page, size);
+		return this.snifferConfigService.getAllSnifferConfigFiles(page, size);
 	}
 	
 	@MyLog
-	@PostMapping("/add")
-	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<?> addNewScript(
-			@CurrentUser UserPrincipal currentUser,
-			@Valid @RequestBody ScriptRequest scriptRequest) {
-		
-		return this.scriptService.addNewScript(scriptRequest.toEntity());
+	@GetMapping("/user")
+	@PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    public ResponseEntity<?> getSnifferConfigFileByUserId(
+    		@CurrentUser UserPrincipal currentUser,
+    		@RequestParam(name = "id") String id) {
+		return this.snifferConfigService.getSnifferConfigFileByUserId(id);
 	}
+	
 	
 	@MyLog
 	@PutMapping("/update")
-	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<?> updateScript(
+	@PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+	public ResponseEntity<?> updateSnifferConfigFile(
 			@CurrentUser UserPrincipal currentUser,
 			@RequestParam(name = "id") String id, 
-			@Valid @RequestBody ScriptRequest scriptRequest) {
+			@Valid @RequestBody SnffierConfigRequest snffierConfigRequest) {
 		
-		return this.scriptService.updateScript(id, scriptRequest.toEntity());
+		return this.snifferConfigService.updateSnifferConfigFileByUserId(id, snffierConfigRequest.toEntity());
 	}
 	
 }

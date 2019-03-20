@@ -21,7 +21,6 @@ import com.itaytas.securityServer.config.AppConstants;
 import com.itaytas.securityServer.dal.LogDao;
 import com.itaytas.securityServer.exception.BadRequestException;
 import com.itaytas.securityServer.exception.LogNotFoundException;
-import com.itaytas.securityServer.logic.alert.AlertEntity;
 import com.itaytas.securityServer.logic.log.LogEntity;
 import com.itaytas.securityServer.logic.log.LogService;
 
@@ -41,14 +40,14 @@ public class JpaLogService implements LogService {
 	public ResponseEntity<?> addNewLogs(String userIdentifier, List<LogEntity> logs) {
 		int numLogs = logs.size();
 		if (numLogs == 0) {
-			return new ResponseEntity(
+			return new ResponseEntity<>(
         			new ApiResponse(false, "No logs were found for: " + userIdentifier),
         			HttpStatus.NO_CONTENT);
 		}
 		
 		logs.stream().forEach(o -> this.logDao.save(o));
 		
-		return new ResponseEntity(
+		return new ResponseEntity<>(
     			new ApiResponse(true, numLogs + " logs were found and saved for: " + userIdentifier),
     			HttpStatus.CREATED);
 	}

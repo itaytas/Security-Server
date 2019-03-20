@@ -80,7 +80,7 @@ public class JpaScriptService implements ScriptService {
 		ScriptEntity savedUpdated = this.scriptDao.save(existing);
 		
 		return new ResponseEntity<>(
-				new ApiResponse(true, "Script with id: " + savedUpdated.getScriptId() + "was updated!"),
+				new ApiResponse(true, "Script with id: " + savedUpdated.getScriptId() + " was updated!"),
 				HttpStatus.CREATED);
 	}
 	
