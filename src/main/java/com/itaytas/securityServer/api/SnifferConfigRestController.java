@@ -24,8 +24,6 @@ import com.itaytas.securityServer.security.UserPrincipal;
 @RestController
 @RequestMapping("/api/sniffer")
 public class SnifferConfigRestController {
-
-	// @PreAuthorize("hasRole('ROLE_VIEWER') or hasRole('ROLE_EDITOR')")
 	
 	private SnifferConfigService snifferConfigService;
 	
