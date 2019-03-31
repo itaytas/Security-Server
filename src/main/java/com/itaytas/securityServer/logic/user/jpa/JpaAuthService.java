@@ -137,16 +137,10 @@ public class JpaAuthService implements AuthService{
         admin.setRoles(Collections.singleton(userRole));
 
         UserEntity result = userDao.save(admin);
-        
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath()
-                .path("/api/users/{username}")
-                .buildAndExpand(result.getUsername())
-                .toUri();
 
-        return ResponseEntity
-        		.created(location)
-        		.body(new ApiResponse(true, "User registered successfully"));
+        return new ResponseEntity<>(
+        		new ApiResponse(true, "Admin registered successfully [username = " + result.getName() + "]"),
+        		HttpStatus.CREATED);
 
 	}
 

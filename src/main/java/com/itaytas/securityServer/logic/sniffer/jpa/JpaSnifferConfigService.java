@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.itaytas.securityServer.aop.MyLog;
 import com.itaytas.securityServer.api.response.ApiResponse;
 import com.itaytas.securityServer.api.response.PagedResponse;
-import com.itaytas.securityServer.config.AppConstants;
 import com.itaytas.securityServer.config.AppUtilsAndConstants;
 import com.itaytas.securityServer.dal.SnifferConfigDao;
 import com.itaytas.securityServer.dal.UserDao;

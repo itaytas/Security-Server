@@ -16,6 +16,7 @@ public class SnffierConfigRequest {
 	public SnffierConfigRequest(String userId, List<String> userApps) {
 		this.userId = userId;
 		this.userApps = userApps;
+		this.snifferConfigId = null;
 	}
 	
 	public SnffierConfigRequest(SnifferConfigEntity entity) {
@@ -25,7 +26,8 @@ public class SnffierConfigRequest {
 	
 	public SnifferConfigEntity toEntity() {
 		SnifferConfigEntity rv = new SnifferConfigEntity();
-		 if (this.snifferConfigId != null || !this.snifferConfigId.isEmpty()) {
+		System.err.println("snifferConfigId = " + this.snifferConfigId);
+		 if (this.snifferConfigId != null) {
 			rv.setSnifferConfigId(this.snifferConfigId);
 		}
 		rv.setUserId(this.userId);
