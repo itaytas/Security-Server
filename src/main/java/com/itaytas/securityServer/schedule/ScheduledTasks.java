@@ -58,7 +58,7 @@ public class ScheduledTasks {
 	@Scheduled(fixedRate = 90000)
 	public void findScriptsEvents() {
 		String nowDate = dateFormat.format(new Date());
-		LOG.info("The time is now " + nowDate);
+		LOG.info("****** findScriptsEvents method has been started on: " + nowDate + " ******");
 		List<ScriptEntity> scripts = this.scriptDao.findByActive(true);
 		List<AlertEntity> rvList = null;
 		try {
@@ -73,7 +73,6 @@ public class ScheduledTasks {
 		} catch (Exception e) {
 			LOG.info("ERROR: " + e.getMessage());
 			return;
-//			throw new RuntimeException(e);
 		}
 		
 		if (rvList == null || rvList.size() == 0 || rvList.isEmpty()) {

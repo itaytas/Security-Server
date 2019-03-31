@@ -26,7 +26,6 @@ public class SnffierConfigRequest {
 	
 	public SnifferConfigEntity toEntity() {
 		SnifferConfigEntity rv = new SnifferConfigEntity();
-		System.err.println("snifferConfigId = " + this.snifferConfigId);
 		 if (this.snifferConfigId != null) {
 			rv.setSnifferConfigId(this.snifferConfigId);
 		}
