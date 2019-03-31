@@ -93,7 +93,7 @@ public class JpaAuthService implements AuthService{
 
         UserEntity result = userDao.save(user);
         
-        // Create Initial Sniffer Config File for the new User 
+        // Create Initial Sniffer Configuration File for the new User 
         String userId = result.getId();
         this.snifferConfigService.createInitialSnifferConfigFileForNewUser(userId);
         

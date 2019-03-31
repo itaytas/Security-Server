@@ -17,9 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.itaytas.securityServer.aop.MyLog;
 import com.itaytas.securityServer.api.response.ApiResponse;
 import com.itaytas.securityServer.api.response.PagedResponse;
-import com.itaytas.securityServer.config.AppConstants;
+import com.itaytas.securityServer.config.AppUtilsAndConstants;
 import com.itaytas.securityServer.dal.LogDao;
-import com.itaytas.securityServer.exception.BadRequestException;
 import com.itaytas.securityServer.exception.LogNotFoundException;
 import com.itaytas.securityServer.logic.log.LogEntity;
 import com.itaytas.securityServer.logic.log.LogService;
@@ -56,7 +55,7 @@ public class JpaLogService implements LogService {
 	@Transactional(readOnly = true)
 	@MyLog
 	public PagedResponse<LogEntity> getAllLogsByUserId(String userId, int size, int page) {
-		validatePageNumberAndSize(page, size);
+		AppUtilsAndConstants.validatePageNumberAndSize(page, size);
 		
 		Page<LogEntity> logPage = this.logDao
 				.findAll(PageRequest.of(page, size, Sort.Direction.DESC, "createdAt"));
@@ -120,16 +119,6 @@ public class JpaLogService implements LogService {
 			}); 
 		});
 		return relevantLogs;
-	}
-
-	private void validatePageNumberAndSize(int page, int size) {
-		if (page < 0) {
-			throw new BadRequestException("Page number cannot be less than zero.");
-		}
-
-		if (size > AppConstants.MAX_PAGE_SIZE || size < 0) {
-			throw new BadRequestException("Page size must be between 0 and " + AppConstants.MAX_PAGE_SIZE);
-		}
 	}
 	
 }

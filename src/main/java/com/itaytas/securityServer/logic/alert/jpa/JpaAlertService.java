@@ -12,11 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.itaytas.securityServer.aop.MyLog;
 import com.itaytas.securityServer.api.response.PagedResponse;
-import com.itaytas.securityServer.config.AppConstants;
+import com.itaytas.securityServer.config.AppUtilsAndConstants;
 import com.itaytas.securityServer.dal.AlertDao;
 import com.itaytas.securityServer.dal.UserDao;
 import com.itaytas.securityServer.exception.AlertAlreadyExistsException;
-import com.itaytas.securityServer.exception.BadRequestException;
 import com.itaytas.securityServer.exception.UserNotFoundException;
 import com.itaytas.securityServer.exception.WorngUserDetailsException;
 import com.itaytas.securityServer.logic.alert.AlertEntity;
@@ -86,7 +85,7 @@ public class JpaAlertService implements AlertService{
 	@Transactional(readOnly = true)
 	@MyLog
 	public PagedResponse<AlertEntity> getAllAlerts(int page, int size) {
-		validatePageNumberAndSize(page, size);
+		AppUtilsAndConstants.validatePageNumberAndSize(page, size);
 
 		Page<AlertEntity> alertPage = this.alertDao
 				.findAll(PageRequest.of(page, size, Sort.Direction.DESC, "createdAt"));
@@ -101,15 +100,5 @@ public class JpaAlertService implements AlertService{
 	public void cleanup() {
 		this.alertDao.deleteAll();
 	}
-	
-	
-	private void validatePageNumberAndSize(int page, int size) {
-		if (page < 0) {
-			throw new BadRequestException("Page number cannot be less than zero.");
-		}
 
-		if (size > AppConstants.MAX_PAGE_SIZE || size < 0) {
-			throw new BadRequestException("Page size must be between 0 and " + AppConstants.MAX_PAGE_SIZE);
-		}
-	}
 }

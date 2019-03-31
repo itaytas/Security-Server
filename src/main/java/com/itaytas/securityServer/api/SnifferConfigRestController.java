@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.itaytas.securityServer.aop.MyLog;
 import com.itaytas.securityServer.api.response.PagedResponse;
 import com.itaytas.securityServer.api.sniffer.SnffierConfigRequest;
-import com.itaytas.securityServer.config.AppConstants;
+import com.itaytas.securityServer.config.AppUtilsAndConstants;
 import com.itaytas.securityServer.logic.sniffer.SnifferConfigEntity;
 import com.itaytas.securityServer.logic.sniffer.SnifferConfigService;
 import com.itaytas.securityServer.security.CurrentUser;
@@ -37,8 +37,8 @@ public class SnifferConfigRestController {
     @PreAuthorize("hasRole('ADMIN')")
     public PagedResponse<SnifferConfigEntity> getAllSnifferConfigFiles(
     		@CurrentUser UserPrincipal currentUser,
-    		@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size,
-			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page) {
+    		@RequestParam(name = "size", required = false, defaultValue = AppUtilsAndConstants.DEFAULT_PAGE_SIZE) int size,
+			@RequestParam(name = "page", required = false, defaultValue = AppUtilsAndConstants.DEFAULT_PAGE_NUMBER) int page) {
 		
 		return this.snifferConfigService.getAllSnifferConfigFiles(page, size);
 	}

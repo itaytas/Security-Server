@@ -14,9 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.itaytas.securityServer.aop.MyLog;
 import com.itaytas.securityServer.api.response.ApiResponse;
 import com.itaytas.securityServer.api.response.PagedResponse;
-import com.itaytas.securityServer.config.AppConstants;
+import com.itaytas.securityServer.config.AppUtilsAndConstants;
 import com.itaytas.securityServer.dal.ScriptDao;
-import com.itaytas.securityServer.exception.BadRequestException;
 import com.itaytas.securityServer.logic.script.ScriptEntity;
 import com.itaytas.securityServer.logic.script.ScriptService;
 
@@ -90,7 +89,7 @@ public class JpaScriptService implements ScriptService {
 	@Transactional(readOnly = true)
 	@MyLog
 	public PagedResponse<ScriptEntity> getAllScripts(int page, int size) {
-		validatePageNumberAndSize(page, size);
+		AppUtilsAndConstants.validatePageNumberAndSize(page, size);
 
 		Page<ScriptEntity> scriptPage = this.scriptDao
 				.findAll(PageRequest.of(page, size, Sort.Direction.DESC, "createdAt"));
@@ -106,15 +105,5 @@ public class JpaScriptService implements ScriptService {
 	public void cleanup() {
 		this.scriptDao.deleteAll();
 
-	}
-
-	private void validatePageNumberAndSize(int page, int size) {
-		if (page < 0) {
-			throw new BadRequestException("Page number cannot be less than zero.");
-		}
-
-		if (size > AppConstants.MAX_PAGE_SIZE || size < 0) {
-			throw new BadRequestException("Page size must be between 0 and " + AppConstants.MAX_PAGE_SIZE);
-		}
 	}
 }

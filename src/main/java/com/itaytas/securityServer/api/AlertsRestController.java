@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.itaytas.securityServer.aop.MyLog;
 import com.itaytas.securityServer.api.response.PagedResponse;
+import com.itaytas.securityServer.config.AppUtilsAndConstants;
 import com.itaytas.securityServer.logic.alert.AlertEntity;
 import com.itaytas.securityServer.logic.alert.AlertService;
 import com.itaytas.securityServer.security.CurrentUser;
@@ -31,8 +32,8 @@ public class AlertsRestController {
     @PreAuthorize("hasRole('ADMIN')")
     public PagedResponse<AlertEntity> getAllAlerts(
     		@CurrentUser UserPrincipal currentUser,
-    		@RequestParam(name = "size", required = false, defaultValue = "10") int size,
-			@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
+    		@RequestParam(name = "size", required = false, defaultValue = AppUtilsAndConstants.DEFAULT_PAGE_SIZE) int size,
+			@RequestParam(name = "page", required = false, defaultValue = AppUtilsAndConstants.DEFAULT_PAGE_NUMBER) int page) {
 		
 		return this.alertService.getAllAlerts(page, size);
 	}

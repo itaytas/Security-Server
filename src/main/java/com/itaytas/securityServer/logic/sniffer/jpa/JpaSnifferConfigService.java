@@ -13,9 +13,9 @@ import com.itaytas.securityServer.aop.MyLog;
 import com.itaytas.securityServer.api.response.ApiResponse;
 import com.itaytas.securityServer.api.response.PagedResponse;
 import com.itaytas.securityServer.config.AppConstants;
+import com.itaytas.securityServer.config.AppUtilsAndConstants;
 import com.itaytas.securityServer.dal.SnifferConfigDao;
 import com.itaytas.securityServer.dal.UserDao;
-import com.itaytas.securityServer.exception.BadRequestException;
 import com.itaytas.securityServer.logic.sniffer.SnifferConfigEntity;
 import com.itaytas.securityServer.logic.sniffer.SnifferConfigService;
 
@@ -39,7 +39,7 @@ public class JpaSnifferConfigService implements SnifferConfigService{
 			return null;
 		}
 		
-		SnifferConfigEntity entity = new SnifferConfigEntity(userId, AppConstants.DEFAULT_SNIFFER_CONFIG_APPS);
+		SnifferConfigEntity entity = new SnifferConfigEntity(userId, AppUtilsAndConstants.DEFAULT_SNIFFER_CONFIG_APPS);
 		return this.snifferConfigDao.save(entity);
 	}
 
@@ -103,7 +103,7 @@ public class JpaSnifferConfigService implements SnifferConfigService{
 	@Transactional(readOnly = true)
 	@MyLog
 	public PagedResponse<SnifferConfigEntity> getAllSnifferConfigFiles(int page, int size) {
-		validatePageNumberAndSize(page, size);
+		AppUtilsAndConstants.validatePageNumberAndSize(page, size);
 
 		Page<SnifferConfigEntity> snifferConfigPage = this.snifferConfigDao
 				.findAll(PageRequest.of(page, size, Sort.Direction.DESC, "createdAt"));
@@ -116,18 +116,7 @@ public class JpaSnifferConfigService implements SnifferConfigService{
 	@Transactional
 	@MyLog
 	public void cleanup() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void validatePageNumberAndSize(int page, int size) {
-		if (page < 0) {
-			throw new BadRequestException("Page number cannot be less than zero.");
-		}
-
-		if (size > AppConstants.MAX_PAGE_SIZE || size < 0) {
-			throw new BadRequestException("Page size must be between 0 and " + AppConstants.MAX_PAGE_SIZE);
-		}
+		this.snifferConfigDao.deleteAll();
 	}
 	
 }
