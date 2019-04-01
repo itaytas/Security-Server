@@ -1,5 +1,7 @@
 package com.itaytas.securityServer.dal;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
@@ -26,4 +28,8 @@ public interface UserDao extends PagingAndSortingRepository<UserEntity, String> 
 	Boolean existsByEmail(String email);
 	
 	List<UserEntity> findByRoles(Set<Role> roles);
+
+	Page<UserEntity> findAllByRolesContains(Role userRole, PageRequest of);
+
+	List<UserEntity> findAllByRolesContains(Role userRole);
 }

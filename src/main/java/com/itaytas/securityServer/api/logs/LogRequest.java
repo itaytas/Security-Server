@@ -33,10 +33,8 @@ public class LogRequest {
 	}
 
 	public LogEntity toEntity(String userId) {
-		LogEntity entity = 
-				new LogEntity(userId, this.protocol, this.source, this.destination,
-								 this.sourcePort, this.destinationPort, this.httpData,
-								 this.malicious, this.attacksNames);
+		LogEntity entity = new LogEntity(userId, this.protocol, this.source, this.destination, this.sourcePort,
+				this.destinationPort, this.httpData, this.malicious, this.attacksNames);
 		return entity;
 	}
 

@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.itaytas.securityServer.aop.MyLog;
@@ -17,6 +18,7 @@ import com.itaytas.securityServer.api.response.PagedResponse;
 import com.itaytas.securityServer.api.user.UserIdentityAvailability;
 import com.itaytas.securityServer.api.user.UserProfile;
 import com.itaytas.securityServer.api.user.UserSummary;
+import com.itaytas.securityServer.config.AppUtilsAndConstants;
 import com.itaytas.securityServer.logic.user.UserEntity;
 import com.itaytas.securityServer.logic.user.UserUtilService;
 import com.itaytas.securityServer.security.CurrentUser;
@@ -84,8 +86,9 @@ public class UserUtilRestConroller {
     @MyLog
     @GetMapping("/users/all")
     @PreAuthorize("hasRole('ADMIN')")
-    public PagedResponse<?> getAllUser(@CurrentUser UserPrincipal currentUser) {
-        return null;
-//        return this.userUtilService.getAllUsersWithUserRole();
+    public PagedResponse<?> getAllUser(@CurrentUser UserPrincipal currentUser,
+    		@RequestParam(name = "size", required = false, defaultValue = AppUtilsAndConstants.DEFAULT_PAGE_SIZE) int size,
+			@RequestParam(name = "page", required = false, defaultValue = AppUtilsAndConstants.DEFAULT_PAGE_NUMBER) int page) {
+        return this.userUtilService.adminRequestToGetAllRoleUsers(page, size);
     }
 }
