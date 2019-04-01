@@ -16,6 +16,15 @@ public class AppUtilsAndConstants {
 	public static final ArrayList<String> DEFAULT_SNIFFER_CONFIG_APPS = 
 			Stream.of("FireFox", "Google Chrome")
 			.collect(Collectors.toCollection(ArrayList::new));
+	
+	public static final String INDEX_HELLO_WORLD = 
+			"Welcome to Moblie Protection For iOS final project!\n" 
+			+
+			"For registering the system please navigate to /api/auth/signup\n"
+			+
+			"For loging in please navigate to /api/auth/signin\n"
+			+
+			"\nHave a great day!";
 
 	public AppUtilsAndConstants() {
 	}
