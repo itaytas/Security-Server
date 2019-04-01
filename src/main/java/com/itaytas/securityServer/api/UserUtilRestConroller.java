@@ -1,5 +1,8 @@
 package com.itaytas.securityServer.api;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.validation.constraints.Email;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.itaytas.securityServer.aop.MyLog;
+import com.itaytas.securityServer.api.response.PagedResponse;
 import com.itaytas.securityServer.api.user.UserIdentityAvailability;
 import com.itaytas.securityServer.api.user.UserProfile;
 import com.itaytas.securityServer.api.user.UserSummary;
@@ -31,10 +35,21 @@ public class UserUtilRestConroller {
 	
 	@MyLog
 	@GetMapping("/user/me")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser) {
-        UserSummary userSummary = 
-        		new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getName());
+		UserEntity user = this.userUtilService.getUserProfile(currentUser.getUsername());
+
+		Set<String> currentUserRoles = new HashSet<>();
+		user.getRoles().stream().forEach((role) -> currentUserRoles.add(role.getName().toString()));
+		
+		UserSummary userSummary = new UserSummary(
+				user.getId(),
+				user.getUsername(),
+				user.getName(),
+				user.getEmail(),
+				currentUserRoles,
+				user.getCreatedAt());
+		
         return userSummary;
     }
 
@@ -54,7 +69,10 @@ public class UserUtilRestConroller {
 
     @MyLog
     @GetMapping("/users/{username}")
-    public UserProfile getUserProfile(@PathVariable(value = "username") String username) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public UserProfile getUserProfile(
+    		@CurrentUser UserPrincipal currentUser,
+    		@PathVariable(value = "username") String username) {
         UserEntity user = this.userUtilService.getUserProfile(username);
 
         UserProfile userProfile = 
@@ -62,5 +80,12 @@ public class UserUtilRestConroller {
 
         return userProfile;
     }
-
+    
+    @MyLog
+    @GetMapping("/users/all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public PagedResponse<?> getAllUser(@CurrentUser UserPrincipal currentUser) {
+        return null;
+//        return this.userUtilService.getAllUsersWithUserRole();
+    }
 }

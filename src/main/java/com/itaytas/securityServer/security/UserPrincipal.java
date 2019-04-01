@@ -95,6 +95,12 @@ public class UserPrincipal implements UserDetails {
 	public boolean isEnabled() {
 		return true;
 	}
+	
+	@Override
+	public String toString() {
+		return "UserPrincipal [id=" + id + ", name=" + name + ", username=" + username + ", email=" + email
+				+ ", password=" + password + ", authorities=" + authorities + "]";
+	}
 
 	@Override
 	public boolean equals(Object o) {
