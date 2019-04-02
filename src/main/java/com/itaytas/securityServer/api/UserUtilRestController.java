@@ -25,18 +25,18 @@ import com.itaytas.securityServer.security.CurrentUser;
 import com.itaytas.securityServer.security.UserPrincipal;
 
 @RestController
-@RequestMapping("/api")
-public class UserUtilRestConroller {
+@RequestMapping("/api/user")
+public class UserUtilRestController {
 	
 	private UserUtilService userUtilService;
 	
 	@Autowired
-	public UserUtilRestConroller(UserUtilService userUtilService) {
+	public UserUtilRestController(UserUtilService userUtilService) {
 		this.userUtilService = userUtilService;
 	}
 	
 	@MyLog
-	@GetMapping("/user/me")
+	@GetMapping("/me")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser) {
 		UserEntity user = this.userUtilService.getUserProfile(currentUser.getUsername());
@@ -56,21 +56,21 @@ public class UserUtilRestConroller {
     }
 
 	@MyLog
-    @GetMapping("/user/checkUsernameAvailability/{username}")
+    @GetMapping("/checkUsernameAvailability/{username}")
     public UserIdentityAvailability checkUsernameAvailability(@PathVariable(value = "username") String username) {
         Boolean isAvailable = this.userUtilService.checkUsernameAvailability(username);
         return new UserIdentityAvailability(isAvailable);
     }
 	
 	@MyLog
-    @GetMapping("/user/checkEmailAvailability/{email}")
+    @GetMapping("/checkEmailAvailability/{email}")
     public UserIdentityAvailability checkEmailAvailability(@Email @PathVariable(value = "email") String email) {
         Boolean isAvailable = this.userUtilService.checkEmailAvailability(email);
         return new UserIdentityAvailability(isAvailable);
     }
 
     @MyLog
-    @GetMapping("/users/{username}")
+    @GetMapping("/{username}")
     @PreAuthorize("hasRole('ADMIN')")
     public UserProfile getUserProfile(
     		@CurrentUser UserPrincipal currentUser,
@@ -84,9 +84,9 @@ public class UserUtilRestConroller {
     }
     
     @MyLog
-    @GetMapping("/users/all")
+    @GetMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")
-    public PagedResponse<?> getAllUser(@CurrentUser UserPrincipal currentUser,
+    public PagedResponse<?> getAllUsers(@CurrentUser UserPrincipal currentUser,
     		@RequestParam(name = "size", required = false, defaultValue = AppUtilsAndConstants.DEFAULT_PAGE_SIZE) int size,
 			@RequestParam(name = "page", required = false, defaultValue = AppUtilsAndConstants.DEFAULT_PAGE_NUMBER) int page) {
         return this.userUtilService.adminRequestToGetAllRoleUsers(page, size);
