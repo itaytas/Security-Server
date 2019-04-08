@@ -33,7 +33,7 @@ public class ScriptRequest {
 	public ScriptEntity toEntity() {
 		ScriptEntity rv = new ScriptEntity();
 		
-		if(this.scriptId != null || !this.scriptId.isEmpty()) {
+		if(this.scriptId != null || this.scriptId != "") {
 			rv.setScriptId(this.scriptId);
 		}
 		rv.setType(this.type);
