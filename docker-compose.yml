@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+  mongodb:
+    image: mongo:3.6
+    container_name: "mongodb"
+    ports:
+    - 27017:27017
+    command: --smallfiles
+    restart: always
+  
+  app:
+    build: .
+    restart: always
+    container_name: "app-container"
+    ports:
+    - 5000:5000
+    links:
+    - mongodb
