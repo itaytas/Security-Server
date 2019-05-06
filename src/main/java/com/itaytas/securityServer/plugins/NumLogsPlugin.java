@@ -62,10 +62,12 @@ public class NumLogsPlugin implements SystemPlugin{
 				this.jackson.writeValueAsString(
 						scriptEntity.getDetails()), NumLogs.class);
 		
+		// Extract to local variables
 		int numLogsToCheck = numLogsObj.getNumLogs();
 		Date fromDateToCheck = 
 				Date.from(Instant.now().minus(Duration.ofDays(numLogsObj.getNumDaysAgo())));
 		
+		// Get all users and their malicious logs
 		List<UserEntity> users = this.userUtilService.getAllRoleUsers();
 		for (UserEntity user : users) {
 			List<LogEntity> logsByUserId = 

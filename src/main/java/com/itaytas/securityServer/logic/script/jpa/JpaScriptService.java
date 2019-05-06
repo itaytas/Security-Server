@@ -104,6 +104,5 @@ public class JpaScriptService implements ScriptService {
 	@MyLog
 	public void cleanup() {
 		this.scriptDao.deleteAll();
-
 	}
 }
