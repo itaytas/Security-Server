@@ -109,14 +109,15 @@ public class JpaLogService implements LogService {
 			Date fromDateToCheck) {
 		List<LogEntity> UnfilteredLogs = getUserMaliciousLogsAfterDate(userId, fromDateToCheck);
 		List<LogEntity> relevantLogs = new ArrayList<>();
-			
+		
+		// Notice that the parameter attacksNames [List<String>] needs to equal to 
+		// log.getAttacksNames() [List<String>] -> list comparison
+
 		UnfilteredLogs.stream().forEach((log)-> {
-			log.getAttacksNames().stream().forEach((attackName)-> {
-				if (attacksNames.contains(attackName) && !relevantLogs.contains(log)) {
-					relevantLogs.add(log);
-					return;
-				}
-			}); 
+			if (AppUtilsAndConstants.isListsEqualIgnoreOrder(attacksNames, log.getAttacksNames()) 
+					&& !relevantLogs.contains(log)) {
+				relevantLogs.add(log);
+			}
 		});
 		return relevantLogs;
 	}

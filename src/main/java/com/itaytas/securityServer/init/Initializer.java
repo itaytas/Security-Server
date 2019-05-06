@@ -54,8 +54,7 @@ public class Initializer {
 	@MyLog
 	private void createNumLogsScript() {
 		List<String> attacksNames = new ArrayList<>();
-		attacksNames.add("SqlInjection");
-		attacksNames.add("XSS");
+		attacksNames.add("SQLi");
 		
 		Map<String, Object> numLogsDetails = new HashMap<>();
 		numLogsDetails.put("numLogs", 3);
