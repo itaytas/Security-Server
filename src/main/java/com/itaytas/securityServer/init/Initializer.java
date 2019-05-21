@@ -50,16 +50,15 @@ public class Initializer {
 		createNumLogsScript();
 	}
 
-	
 	@MyLog
 	private void createNumLogsScript() {
 		List<String> attacksNames = new ArrayList<>();
-		attacksNames.add("SQLi");
-		
+		attacksNames.add("SqlInjection");
+
 		Map<String, Object> numLogsDetails = new HashMap<>();
 		numLogsDetails.put("numLogs", 3);
 		numLogsDetails.put("numDaysAgo", 1);
-		
+
 		ScriptEntity scriptEntity = new ScriptEntity("NumLogs", attacksNames, true, numLogsDetails);
 		this.scriptService.addNewScript(scriptEntity);
 	}
@@ -77,5 +76,5 @@ public class Initializer {
 			roleDao.save(userRole);
 		}
 	}
-	
+
 }
